@@ -100,32 +100,45 @@ hamza72x/audit-reports/*.html   — HTML security audit reports (10 programs + i
 
 Every external repo that is cloned or downloaded during installation or runtime:
 
-| # | Original | Fork | Type |
-|---|----------|------|------|
-| 1 | AvengeMedia/DankMaterialShell | hamza72x/DankMaterialShell | Main project |
-| 2 | AvengeMedia/dgop | hamza72x/dgop | System monitor (Go) |
-| 3 | AvengeMedia/dms-plugin-registry | hamza72x/dms-plugin-registry | Plugin/theme registry (JSON data) |
-| 4 | AvengeMedia/danksearch | hamza72x/danksearch | File search daemon (Go) |
-| 5 | InioX/matugen | hamza72x/matugen | Color scheme generator (Rust) |
-| 6 | quickshell-mirror/quickshell | hamza72x/quickshell | QML shell framework (C++) |
-| 7 | YaLTeR/niri | hamza72x/niri | Wayland compositor (Rust) |
-| 8 | hyprwm/Hyprland | hamza72x/Hyprland | Wayland compositor (C++) |
-| 9 | ghostty-org/ghostty | hamza72x/ghostty | Terminal emulator (Zig) |
-| 10 | Supreeeme/xwayland-satellite | hamza72x/xwayland-satellite | XWayland bridge (Rust) |
+| # | Original | Fork | Visibility | Type |
+|---|----------|------|-----------|------|
+| 1 | AvengeMedia/DankMaterialShell | hamza72x/DankMaterialShell | **PRIVATE** | Main project |
+| 2 | AvengeMedia/dgop | hamza72x/dgop | Public | System monitor (Go) |
+| 3 | AvengeMedia/dms-plugin-registry | hamza72x/dms-plugin-registry | Public | Plugin/theme registry (JSON data) |
+| 4 | AvengeMedia/danksearch | hamza72x/danksearch | Public | File search daemon (Go) |
+| 5 | InioX/matugen | hamza72x/matugen | Public | Color scheme generator (Rust) |
+| 6 | quickshell-mirror/quickshell | hamza72x/quickshell | Public | QML shell framework (C++) |
+| 7 | YaLTeR/niri | hamza72x/niri | Public | Wayland compositor (Rust) |
+| 8 | hyprwm/Hyprland | hamza72x/Hyprland | Public | Wayland compositor (C++) |
+| 9 | ghostty-org/ghostty | hamza72x/ghostty | Public | Terminal emulator (Zig) |
+| 10 | Supreeeme/xwayland-satellite | hamza72x/xwayland-satellite | Public | XWayland bridge (Rust) |
+
+> **Note:** Only the main repo (#1) is private. All dependency forks (#2–#10) are public. The `dankinstall` TUI clones dependencies via HTTPS (no SSH required for those). Only the initial clone of the main repo requires SSH authentication.
 
 ## Installation
 
-One-liner:
+This is a **private repo**. The curl one-liner does not work (requires auth). Use SSH clone + local build.
+
+### On a barebone Fedora (or any supported distro):
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/hamza72x/DankMaterialShell/main/hamza72x/install.sh | sh
+# 1. Set up SSH key for GitHub (skip if already done)
+ssh-keygen -t ed25519
+cat ~/.ssh/id_ed25519.pub
+# → Add that key at https://github.com/settings/ssh/new
+
+# 2. Clone and run installer
+git clone git@github.com:hamza72x/DankMaterialShell.git ~/.local/src/DankMaterialShell
+cd ~/.local/src/DankMaterialShell/hamza72x
+bash install.sh
 ```
 
-The installer:
-1. Checks Linux + architecture (amd64/arm64)
-2. Fetches the release binary from `hamza72x/DankMaterialShell` GitHub releases
-3. Verifies SHA256 checksum before executing
-4. Runs the `dankinstall` TUI which builds all deps from source using `hamza72x/*` forks
+The installer handles everything:
+1. Verifies SSH access to GitHub
+2. Installs build dependencies via system package manager (dnf/pacman/apt)
+3. Builds `dms` CLI and `dankinstall` from source
+4. Runs `dankinstall` TUI (compositor/terminal selection, builds all deps from `hamza72x/*` forks)
+5. Installs the shell system-wide + systemd service
 
 ## Post-Install: Updates Are Permanently Disabled
 

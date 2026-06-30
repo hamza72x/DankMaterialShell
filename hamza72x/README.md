@@ -15,17 +15,25 @@ This fork mitigates that risk by:
 
 ## Installation
 
-One-liner:
+This is a **private repo**. Install via SSH clone + local build on a barebone Fedora (or Arch/Debian):
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/hamza72x/DankMaterialShell/main/hamza72x/install.sh | sh
+# 1. Ensure SSH key is set up for GitHub
+ssh-keygen -t ed25519  # if you don't have one
+cat ~/.ssh/id_ed25519.pub  # add this to https://github.com/settings/ssh/new
+
+# 2. Clone and run installer
+git clone git@github.com:hamza72x/DankMaterialShell.git ~/.local/src/DankMaterialShell
+cd ~/.local/src/DankMaterialShell/hamza72x
+bash install.sh
 ```
 
 The installer will:
-- Verify your system is Linux (amd64 or arm64)
-- Download the latest release from the `hamza72x` org
-- Verify the SHA256 checksum before executing anything
-- Build all dependencies from source using our forks (never from upstream repos)
+- Install all build dependencies (go, cargo, cmake, Qt6, etc.) via your system package manager
+- Build `dms` CLI and `dankinstall` from source
+- Run the interactive TUI installer (compositor/terminal selection)
+- Build all dependencies from source using our `hamza72x/*` forks (never from upstream repos)
+- Install the shell system-wide
 
 ## Post-Install: No Upstream Updates
 
@@ -40,18 +48,20 @@ After installation, **all DMS self-update mechanisms are disabled**:
 
 ## Forked Repositories
 
-| # | Original | Fork | Purpose |
-|---|----------|------|---------|
-| 1 | AvengeMedia/DankMaterialShell | hamza72x/DankMaterialShell | Main shell |
-| 2 | AvengeMedia/dgop | hamza72x/dgop | System monitoring (CPU/RAM/GPU) |
-| 3 | AvengeMedia/dms-plugin-registry | hamza72x/dms-plugin-registry | Plugin & theme registry |
-| 4 | AvengeMedia/danksearch | hamza72x/danksearch | File search for launcher (optional) |
-| 5 | InioX/matugen | hamza72x/matugen | Material color generation from wallpapers |
-| 6 | quickshell-mirror/quickshell | hamza72x/quickshell | QML shell framework |
-| 7 | YaLTeR/niri | hamza72x/niri | Scrollable tiling Wayland compositor |
-| 8 | hyprwm/Hyprland | hamza72x/Hyprland | Dynamic tiling Wayland compositor |
-| 9 | ghostty-org/ghostty | hamza72x/ghostty | GPU-accelerated terminal emulator |
-| 10 | Supreeeme/xwayland-satellite | hamza72x/xwayland-satellite | Rootless XWayland bridge |
+| # | Original | Fork | Visibility | Purpose |
+|---|----------|------|-----------|---------|
+| 1 | AvengeMedia/DankMaterialShell | hamza72x/DankMaterialShell | **Private** | Main shell |
+| 2 | AvengeMedia/dgop | hamza72x/dgop | Public | System monitoring (CPU/RAM/GPU) |
+| 3 | AvengeMedia/dms-plugin-registry | hamza72x/dms-plugin-registry | Public | Plugin & theme registry |
+| 4 | AvengeMedia/danksearch | hamza72x/danksearch | Public | File search for launcher (optional) |
+| 5 | InioX/matugen | hamza72x/matugen | Public | Material color generation from wallpapers |
+| 6 | quickshell-mirror/quickshell | hamza72x/quickshell | Public | QML shell framework |
+| 7 | YaLTeR/niri | hamza72x/niri | Public | Scrollable tiling Wayland compositor |
+| 8 | hyprwm/Hyprland | hamza72x/Hyprland | Public | Dynamic tiling Wayland compositor |
+| 9 | ghostty-org/ghostty | hamza72x/ghostty | Public | GPU-accelerated terminal emulator |
+| 10 | Supreeeme/xwayland-satellite | hamza72x/xwayland-satellite | Public | Rootless XWayland bridge |
+
+> Only the main repo (#1) is private. All dependency forks (#2–#10) are public and cloned via HTTPS during installation (no SSH key needed for those).
 
 ## Audit Reports
 
