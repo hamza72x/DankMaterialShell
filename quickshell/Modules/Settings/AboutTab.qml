@@ -308,10 +308,10 @@ Item {
                             iconSize: 18
                             backgroundColor: Theme.surfaceTextHover
                             textColor: Theme.surfaceText
-                            onClicked: Qt.openUrlExternally("https://github.com/AvengeMedia/DankMaterialShell")
+                            onClicked: Qt.openUrlExternally("https://github.com/hamza72x/DankMaterialShell")
                             onHoveredChanged: {
                                 if (hovered)
-                                    resourceTooltip.show(resourceButtonsRow.compactMode ? "GitHub - AvengeMedia/DankMaterialShell" : "github.com/AvengeMedia/DankMaterialShell", githubButton, 0, 0, "bottom");
+                                    resourceTooltip.show(resourceButtonsRow.compactMode ? "GitHub - hamza72x/DankMaterialShell" : "github.com/hamza72x/DankMaterialShell", githubButton, 0, 0, "bottom");
                                 else
                                     resourceTooltip.hide();
                             }
@@ -823,7 +823,7 @@ Item {
 
             StyledText {
                 anchors.horizontalCenter: parent.horizontalCenter
-                text: I18n.tr('<a href="https://github.com/AvengeMedia/DankMaterialShell/blob/master/LICENSE" style="text-decoration:none; color:%1;">MIT License</a>').arg(Theme.surfaceVariantText)
+                text: I18n.tr('<a href="https://github.com/hamza72x/DankMaterialShell/blob/master/LICENSE" style="text-decoration:none; color:%1;">MIT License</a>').arg(Theme.surfaceVariantText)
                 font.pixelSize: Theme.fontSizeMedium
                 color: Theme.surfaceVariantText
                 textFormat: Text.RichText

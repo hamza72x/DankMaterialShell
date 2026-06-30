@@ -2555,7 +2555,7 @@ Item {
                     tags: ["matugen", "neovim", "terminal", "template"]
                     settingKey: "matugenTemplateNeovim"
                     text: "neovim"
-                    description: getTemplateDescription("nvim", I18n.tr("Required plugin: ") + "https://github.com/AvengeMedia/base46")
+                    description: getTemplateDescription("nvim", I18n.tr("Required plugin: ") + "https://github.com/hamza72x/base46")
                     descriptionColor: getTemplateDescriptionColor("nvim")
                     visible: SettingsData.runDmsMatugenTemplates
                     checked: SettingsData.matugenTemplateNeovim
@@ -2839,7 +2839,7 @@ Item {
                 }
 
                 StyledText {
-                    text: I18n.tr('Generate baseline GTK3/4 or QT5/QT6 (requires qt6ct-kde) configurations to follow DMS colors. Only needed once.<br /><br />It is recommended to configure <a href="https://github.com/AvengeMedia/DankMaterialShell/blob/master/README.md#Theming" style="text-decoration:none; color:%1;">adw-gtk3</a> prior to applying GTK themes.').arg(Theme.primary)
+                    text: I18n.tr('Generate baseline GTK3/4 or QT5/QT6 (requires qt6ct-kde) configurations to follow DMS colors. Only needed once.<br /><br />It is recommended to configure <a href="https://github.com/hamza72x/DankMaterialShell/blob/master/README.md#Theming" style="text-decoration:none; color:%1;">adw-gtk3</a> prior to applying GTK themes.').arg(Theme.primary)
                     textFormat: Text.RichText
                     linkColor: Theme.primary
                     onLinkActivated: url => Qt.openUrlExternally(url)

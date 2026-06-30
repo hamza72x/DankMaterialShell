@@ -28,7 +28,7 @@ func pluginInfoFromPlugin(plugin coreplugins.Plugin) PluginInfo {
 }
 
 func isFirstPartyRepo(repo string) bool {
-	return strings.HasPrefix(repo, "https://github.com/AvengeMedia")
+	return strings.HasPrefix(repo, "https://github.com/hamza72x")
 }
 
 func normalizeScreenshotURL(raw string) string {

@@ -659,7 +659,7 @@ func (b *BaseDistribution) installDMSBinary(ctx context.Context, sudoPassword st
 
 	// Get latest release version
 	latestVersionCmd := exec.CommandContext(ctx, "bash", "-c",
-		`curl -s https://api.github.com/repos/AvengeMedia/DankMaterialShell/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/'`)
+		`curl -s https://api.github.com/repos/hamza72x/DankMaterialShell/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/'`)
 	versionOutput, err := latestVersionCmd.Output()
 	if err != nil {
 		return fmt.Errorf("failed to get latest DMS version: %w", err)
@@ -680,7 +680,7 @@ func (b *BaseDistribution) installDMSBinary(ctx context.Context, sudoPassword st
 	defer os.RemoveAll(tmpDir)
 
 	// Download the gzipped binary
-	downloadURL := fmt.Sprintf("https://github.com/AvengeMedia/DankMaterialShell/releases/download/%s/dms-cli-%s.gz", version, arch)
+	downloadURL := fmt.Sprintf("https://github.com/hamza72x/DankMaterialShell/releases/download/%s/dms-cli-%s.gz", version, arch)
 	gzPath := filepath.Join(tmpDir, "dms.gz")
 
 	downloadCmd := exec.CommandContext(ctx, "curl", "-L", downloadURL, "-o", gzPath)

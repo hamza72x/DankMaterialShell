@@ -38,7 +38,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 latest_tag() {
-    git ls-remote --tags --refs --sort='-v:refname' https://github.com/AvengeMedia/DankMaterialShell.git |
+    git ls-remote --tags --refs --sort='-v:refname' https://github.com/hamza72x/DankMaterialShell.git |
         sed -n '1s|.*/v\{0,1\}||p'
 }
 

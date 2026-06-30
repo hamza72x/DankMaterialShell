@@ -96,7 +96,7 @@ func TestBaseDistribution_detectDMS_NeedsUpdate(t *testing.T) {
 	exec.Command("git", "init", dmsPath).Run()
 	exec.Command("git", "-C", dmsPath, "config", "user.email", "test@test.com").Run()
 	exec.Command("git", "-C", dmsPath, "config", "user.name", "Test User").Run()
-	exec.Command("git", "-C", dmsPath, "remote", "add", "origin", "https://github.com/AvengeMedia/DankMaterialShell.git").Run()
+	exec.Command("git", "-C", dmsPath, "remote", "add", "origin", "https://github.com/hamza72x/DankMaterialShell.git").Run()
 
 	testFile := filepath.Join(dmsPath, "test.txt")
 	os.WriteFile(testFile, []byte("test"), 0o644)

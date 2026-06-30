@@ -70,8 +70,8 @@ func SortByFirstParty(plugins []Plugin) []Plugin {
 		if plugins[i].Featured != plugins[j].Featured {
 			return plugins[i].Featured
 		}
-		isFirstPartyI := strings.HasPrefix(plugins[i].Repo, "https://github.com/AvengeMedia")
-		isFirstPartyJ := strings.HasPrefix(plugins[j].Repo, "https://github.com/AvengeMedia")
+		isFirstPartyI := strings.HasPrefix(plugins[i].Repo, "https://github.com/hamza72x")
+		isFirstPartyJ := strings.HasPrefix(plugins[j].Repo, "https://github.com/hamza72x")
 		if isFirstPartyI != isFirstPartyJ {
 			return isFirstPartyI
 		}

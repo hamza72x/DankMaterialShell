@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DMS Audit — dms-plugin-registry</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: #0f0f1a;
+  color: #e0e0e8;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+.header {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border-bottom: 1px solid #2a2a4a;
+  padding: 2rem 0;
+  text-align: center;
+}
+.header h1 { font-size: 1.8rem; color: #fff; margin-bottom: 0.3rem; }
+.header p { color: #8888aa; font-size: 0.95rem; }
+.container { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
+.back { display: inline-block; margin-bottom: 1.5rem; color: #6c8cff; text-decoration: none; font-size: 0.9rem; }
+.back:hover { text-decoration: underline; }
+.card {
+  background: #1a1a2e;
+  border: 1px solid #2a2a4a;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.card h2 {
+  color: #ccc;
+  font-size: 1.05rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #2a2a4a;
+}
+.verdict-safe {
+  display: inline-block;
+  color: #4ade80;
+  font-weight: 700;
+  background: rgba(74, 222, 128, 0.1);
+  padding: 0.3rem 0.8rem;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+.field { margin-bottom: 0.75rem; }
+.field-label { color: #8888aa; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+.field-value { color: #e0e0e8; margin-top: 0.2rem; }
+a { color: #6c8cff; text-decoration: none; }
+a:hover { text-decoration: underline; }
+ul { padding-left: 1.5rem; margin-top: 0.3rem; }
+li { margin-bottom: 0.3rem; color: #ccc; }
+code { background: #2a2a4a; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.9rem; color: #f0a0c0; }
+.meta { text-align: center; margin-top: 2rem; color: #555; font-size: 0.85rem; }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>DMS Security Audit</h1>
+  <p>hamza72x fork &mdash; Audit Date: June 30, 2026</p>
+</div>
+<div class="container">
+  <a class="back" href="index.html">&larr; Back to Index</a>
+
+  <div class="card">
+    <h2>Overview</h2>
+    <span class="verdict-safe">SAFE</span>
+    <div class="field">
+      <div class="field-label">Component</div>
+      <div class="field-value">dms-plugin-registry</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Forked From</div>
+      <div class="field-value"><a href="https://github.com/AvengeMedia/dms-plugin-registry">https://github.com/AvengeMedia/dms-plugin-registry</a></div>
+    </div>
+    <div class="field">
+      <div class="field-label">Fork URL</div>
+      <div class="field-value"><a href="https://github.com/hamza72x/dms-plugin-registry">https://github.com/hamza72x/dms-plugin-registry</a></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Purpose</h2>
+    <p>Official registry of plugins and themes for DankMaterialShell. A git repository containing plugin metadata in JSON manifest format, theme definitions (color schemes in JSON), CI validation scripts, and a Nix packaging layer. Serves as the directory for discovering and installing community plugins.</p>
+  </div>
+
+  <div class="card">
+    <h2>Language &amp; Ecosystem</h2>
+    <div class="field">
+      <div class="field-label">Content Type</div>
+      <div class="field-value">JSON manifests (data-only), PNG screenshots, CI scripts (Python, GitHub Actions only)</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Repository Stats</div>
+      <div class="field-value">1,044 commits, 160 forks, 68 stars</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Installation</div>
+      <div class="field-value">Cloned via <code>git</code> to <code>~/.local/share/dms/registry/</code></div>
+    </div>
+    <div class="field">
+      <div class="field-label">Plugin Manifest Schema</div>
+      <div class="field-value">Each plugin is a JSON file: <code>{ id, name, capabilities, category, repo, author, description, dependencies, compositors, distro, screenshot }</code></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Network Activity</h2>
+    <p>The registry itself makes no network calls. It is fetched via <code>git clone</code> / <code>git pull</code> from GitHub. All URLs in plugin manifests point to GitHub/GitLab/Codeberg repos.</p>
+  </div>
+
+  <div class="card">
+    <h2>Red Flag Checks</h2>
+    <ul>
+      <li>Executable scripts hidden in repo? <strong>NO</strong> &mdash; <code>.github/</code> scripts are CI-only (validation, README generation)</li>
+      <li>Post-install hooks or lifecycle scripts? <strong>NO</strong> &mdash; no package.json, no install scripts in manifests</li>
+      <li>URLs pointing to malicious downloads? <strong>NO</strong> &mdash; all point to GitHub/GitLab/Codeberg repos</li>
+      <li>Shell commands embedded in manifest files? <strong>NO</strong> &mdash; JSON contains only declarative data</li>
+      <li>Binary files? <strong>NO</strong> &mdash; only PNG images in <code>assets/</code></li>
+      <li>Nix packaging: explicitly <code>dontConfigure = true; dontBuild = true;</code> (copy-only, no execution)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Privilege Requirements</h2>
+    <p>None. The registry is cloned and read as a regular user. No elevated privileges required.</p>
+  </div>
+
+  <div class="card">
+    <h2>Security Concerns</h2>
+    <ul>
+      <li><strong>None critical.</strong></li>
+      <li>Third-party plugin code is NOT audited by the registry &mdash; the registry is just a directory. Security of installed plugins depends on each plugin author.</li>
+      <li>CI scripts (Python validators) run only in GitHub Actions, never on user machines.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Verdict</h2>
+    <span class="verdict-safe">SAFE</span>
+    <p style="margin-top:0.5rem;">A clean, data-only registry containing pure JSON manifests, PNG screenshots, and CI validation scripts. Zero executable code that runs on user machines. No post-install hooks, no embedded commands, no malicious URLs. The Nix derivation explicitly disables all build steps (copy-only). Safe to use as a plugin/theme directory.</p>
+  </div>
+
+  <p class="meta">Generated by hamza72x &mdash; June 30, 2026</p>
+</div>
+</body>
+</html>

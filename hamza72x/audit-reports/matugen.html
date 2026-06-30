@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DMS Audit — matugen</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: #0f0f1a;
+  color: #e0e0e8;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+.header {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border-bottom: 1px solid #2a2a4a;
+  padding: 2rem 0;
+  text-align: center;
+}
+.header h1 { font-size: 1.8rem; color: #fff; margin-bottom: 0.3rem; }
+.header p { color: #8888aa; font-size: 0.95rem; }
+.container { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
+.back { display: inline-block; margin-bottom: 1.5rem; color: #6c8cff; text-decoration: none; font-size: 0.9rem; }
+.back:hover { text-decoration: underline; }
+.card {
+  background: #1a1a2e;
+  border: 1px solid #2a2a4a;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.card h2 {
+  color: #ccc;
+  font-size: 1.05rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #2a2a4a;
+}
+.verdict-safe {
+  display: inline-block;
+  color: #4ade80;
+  font-weight: 700;
+  background: rgba(74, 222, 128, 0.1);
+  padding: 0.3rem 0.8rem;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+.field { margin-bottom: 0.75rem; }
+.field-label { color: #8888aa; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+.field-value { color: #e0e0e8; margin-top: 0.2rem; }
+a { color: #6c8cff; text-decoration: none; }
+a:hover { text-decoration: underline; }
+ul { padding-left: 1.5rem; margin-top: 0.3rem; }
+li { margin-bottom: 0.3rem; color: #ccc; }
+code { background: #2a2a4a; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.9rem; color: #f0a0c0; }
+.meta { text-align: center; margin-top: 2rem; color: #555; font-size: 0.85rem; }
+table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; }
+th, td { padding: 0.5rem 0.75rem; text-align: left; border-bottom: 1px solid #1f1f3a; font-size: 0.9rem; }
+th { color: #8888aa; font-weight: 600; }
+.note { background: #1f1f3a; border-left: 3px solid #6c8cff; padding: 0.75rem 1rem; margin-top: 0.75rem; border-radius: 0 6px 6px 0; }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>DMS Security Audit</h1>
+  <p>hamza72x fork &mdash; Audit Date: June 30, 2026</p>
+</div>
+<div class="container">
+  <a class="back" href="index.html">&larr; Back to Index</a>
+
+  <div class="card">
+    <h2>Overview</h2>
+    <span class="verdict-safe">SAFE</span>
+    <div class="field">
+      <div class="field-label">Component</div>
+      <div class="field-value">matugen v4.1.0</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Forked From</div>
+      <div class="field-value"><a href="https://github.com/InioX/matugen">https://github.com/InioX/matugen</a></div>
+    </div>
+    <div class="field">
+      <div class="field-label">Fork URL</div>
+      <div class="field-value"><a href="https://github.com/hamza72x/matugen">https://github.com/hamza72x/matugen</a></div>
+    </div>
+    <div class="field">
+      <div class="field-label">Community Trust</div>
+      <div class="field-value">1.8k stars, GPL-2.0 license, packaged in Arch Linux official repos, NixOS, and NetBSD pkgsrc</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Purpose</h2>
+    <p>A Material You / Material Design 3 color scheme generator. Reads a wallpaper image, extracts dominant colors using the Material Design color algorithm, and writes rendered template files (config files for GTK, terminals, editors, etc.) to user-specified paths. This is the theming engine that powers DMS's dynamic wallpaper-based color schemes.</p>
+  </div>
+
+  <div class="card">
+    <h2>Language &amp; Ecosystem</h2>
+    <div class="field">
+      <div class="field-label">Language</div>
+      <div class="field-value">Rust</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Key Dependencies</div>
+      <div class="field-value">
+        <table>
+          <tr><th>Crate</th><th>Purpose</th></tr>
+          <tr><td>material-colors</td><td>Material Design color algorithm</td></tr>
+          <tr><td>image</td><td>Image loading/processing</td></tr>
+          <tr><td>clap</td><td>CLI argument parsing</td></tr>
+          <tr><td>serde + toml</td><td>Config file parsing</td></tr>
+          <tr><td>chumsky</td><td>Template engine parser</td></tr>
+          <tr><td>execute</td><td>Shell command execution (hooks)</td></tr>
+          <tr><td>sha2</td><td>Image content hashing for cache</td></tr>
+          <tr><td>directories</td><td>XDG platform directories</td></tr>
+          <tr><td>palette + colorsys</td><td>Color space operations</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">build.rs</div>
+      <div class="field-value"><strong>Does not exist.</strong> No custom build scripts that could download or execute anything at compile time.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Network Activity</h2>
+    <p><strong>Default build: ZERO network calls.</strong></p>
+    <div class="note">
+      <strong>Optional features (NOT compiled by default):</strong>
+      <ul style="margin-top:0.5rem;">
+        <li><code>web-image</code> feature: Uses <code>reqwest</code> to download an image from a user-specified URL. Download-only (GET), no data sent. Requires explicit <code>--features web-image</code> at build time.</li>
+        <li><code>update-informer</code> feature: Checks crates.io for newer versions. Only sends package name + version. Requires explicit opt-in in config (<code>version_check = true</code>).</li>
+      </ul>
+      <p style="margin-top:0.5rem; color:#8888aa;">Neither feature is in the default feature set. DMS uses the default build.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Process Execution</h2>
+    <p>The program spawns shell commands in two <strong>user-configured</strong> scenarios:</p>
+    <ul>
+      <li><strong>Template hooks</strong> (<code>pre_hook</code> / <code>post_hook</code>): Defined by the user in their own config file. Runs after generating colors to apply them (e.g., reload a window manager).</li>
+      <li><strong>Wallpaper command</strong> (<code>config.wallpaper.command</code>): User-configured command to set the wallpaper (e.g., <code>swww img {{image}}</code>).</li>
+    </ul>
+    <p style="margin-top:0.5rem; color:#aaa;">No hardcoded commands are executed without user configuration. This is a standard pattern for "rice" tools (pywal, wpgtk, etc.).</p>
+  </div>
+
+  <div class="card">
+    <h2>File Access</h2>
+    <div class="field">
+      <div class="field-label">Reads</div>
+      <div class="field-value">
+        <ul>
+          <li>Image file (user-specified via CLI)</li>
+          <li>Config file (TOML, from XDG config dir or <code>--config</code> flag)</li>
+          <li>Template input files (user-specified in config)</li>
+          <li>Cache files from <code>$XDG_CACHE_HOME/matugen/images/</code></li>
+        </ul>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">Writes</div>
+      <div class="field-value">
+        <ul>
+          <li>Template output files at user-specified <code>output_path</code> (creates parent dirs, respects permissions)</li>
+          <li>Cache files at <code>$XDG_CACHE_HOME/matugen/images/</code> (JSON with computed color schemes)</li>
+        </ul>
+      </div>
+    </div>
+    <p style="margin-top:0.5rem; color:#aaa;"><strong>No writes to sensitive system locations. All output paths are user-configured.</strong></p>
+  </div>
+
+  <div class="card">
+    <h2>Security Concerns</h2>
+    <ul>
+      <li><strong>None critical.</strong></li>
+      <li>The <code>execute</code> crate runs commands through the system shell. If a user's config were tampered with by another program, hooks could run malicious code. Same trust model as any dotfile-based tool.</li>
+      <li>Template output paths are user-controlled, so a misconfigured template could overwrite unintended files. The program checks for read-only permissions before writing.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Verdict</h2>
+    <span class="verdict-safe">SAFE</span>
+    <p style="margin-top:0.5rem;">The default build makes zero network connections. All shell command execution is explicitly user-configured (hooks and wallpaper commands). File I/O is limited to user-specified template inputs/outputs and a standard XDG cache directory. No telemetry, analytics, data collection, or exfiltration. No build.rs. No obfuscated code. The project is GPL-2.0 licensed with 1.8k stars and packaged in official Linux distribution repos.</p>
+  </div>
+
+  <p class="meta">Generated by hamza72x &mdash; June 30, 2026</p>
+</div>
+</body>
+</html>

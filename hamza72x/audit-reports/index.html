@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DMS Security Audit — hamza72x fork</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: #0f0f1a;
+  color: #e0e0e8;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+.header {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border-bottom: 1px solid #2a2a4a;
+  padding: 2rem 0;
+  text-align: center;
+}
+.header h1 {
+  font-size: 1.8rem;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+.header p {
+  color: #8888aa;
+  font-size: 0.95rem;
+}
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+.summary-card {
+  background: #1a1a2e;
+  border: 1px solid #2a2a4a;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+.summary-card h2 {
+  color: #ccc;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #2a2a4a;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #1f1f3a;
+}
+th {
+  color: #8888aa;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+td { font-size: 0.95rem; }
+tr:hover { background: #1f1f3a; }
+a { color: #6c8cff; text-decoration: none; }
+a:hover { text-decoration: underline; color: #8cacff; }
+.verdict-safe {
+  color: #4ade80;
+  font-weight: 700;
+  background: rgba(74, 222, 128, 0.1);
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+.language-tag {
+  color: #a78bfa;
+  font-size: 0.85rem;
+}
+.meta {
+  text-align: center;
+  margin-top: 2rem;
+  color: #555;
+  font-size: 0.85rem;
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>DMS Security Audit</h1>
+  <p>hamza72x fork &mdash; Audit Date: June 30, 2026</p>
+</div>
+<div class="container">
+  <div class="summary-card">
+    <h2>Audited Components</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Component</th>
+          <th>Purpose</th>
+          <th>Language</th>
+          <th>Verdict</th>
+          <th>Report</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>DankMaterialShell</td>
+          <td>Desktop shell (bar, control center, plugins)</td>
+          <td><span class="language-tag">Go + QML</span></td>
+          <td><span class="verdict-safe">SAFE</span></td>
+          <td><a href="dms-shell.html">View</a></td>
+        </tr>
+        <tr>
+          <td>dgop</td>
+          <td>System monitoring daemon</td>
+          <td><span class="language-tag">Go</span></td>
+          <td><span class="verdict-safe">SAFE</span></td>
+          <td><a href="dgop.html">View</a></td>
+        </tr>
+        <tr>
+          <td>dms-plugin-registry</td>
+          <td>Plugin &amp; theme registry</td>
+          <td><span class="language-tag">JSON/YAML</span></td>
+          <td><span class="verdict-safe">SAFE</span></td>
+          <td><a href="dms-plugin-registry.html">View</a></td>
+        </tr>
+        <tr>
+          <td>danksearch</td>
+          <td>File search &amp; indexing for launcher</td>
+          <td><span class="language-tag">Go</span></td>
+          <td><span class="verdict-safe">SAFE</span></td>
+          <td><a href="danksearch.html">View</a></td>
+        </tr>
+        <tr>
+          <td>matugen</td>
+          <td>Material color generation from wallpapers</td>
+          <td><span class="language-tag">Rust</span></td>
+          <td><span class="verdict-safe">SAFE</span></td>
+          <td><a href="matugen.html">View</a></td>
+        </tr>
+        <tr>
+          <td>quickshell</td>
+          <td>QML shell framework</td>
+          <td><span class="language-tag">C++ / QML</span></td>
+          <td><span class="verdict-safe">SAFE</span></td>
+          <td><a href="quickshell.html">View</a></td>
+        </tr>
+        <tr>
+          <td>niri</td>
+          <td>Scrollable tiling Wayland compositor</td>
+          <td><span class="language-tag">Rust</span></td>
+          <td><span class="verdict-safe">SAFE</span></td>
+          <td><a href="niri.html">View</a></td>
+        </tr>
+        <tr>
+          <td>Hyprland</td>
+          <td>Dynamic tiling Wayland compositor</td>
+          <td><span class="language-tag">C++</span></td>
+          <td><span class="verdict-safe">SAFE</span></td>
+          <td><a href="hyprland.html">View</a></td>
+        </tr>
+        <tr>
+          <td>Ghostty</td>
+          <td>GPU-accelerated terminal emulator</td>
+          <td><span class="language-tag">Zig</span></td>
+          <td><span class="verdict-safe">SAFE</span></td>
+          <td><a href="ghostty.html">View</a></td>
+        </tr>
+        <tr>
+          <td>xwayland-satellite</td>
+          <td>Rootless XWayland integration</td>
+          <td><span class="language-tag">Rust</span></td>
+          <td><span class="verdict-safe">SAFE</span></td>
+          <td><a href="xwayland-satellite.html">View</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="summary-card">
+    <h2>Audit Summary</h2>
+    <p style="color:#aaa; margin-bottom:1rem;">All 10 components in the DMS stack have been reviewed and found <strong style="color:#4ade80;">SAFE</strong> for use. No malware, telemetry, analytics, data exfiltration, or obfuscated code was found in any component.</p>
+    <p style="color:#aaa;">Minor concerns (non-blocking):</p>
+    <ul style="color:#aaa; margin-top:0.5rem; padding-left:1.5rem;">
+      <li>DMS uses <code style="color:#f0a;">ip-api.com</code> over HTTP (privacy risk, not a security risk)</li>
+      <li>DMS plugin feedback API at <code style="color:#f0a;">api.danklinux.com</code> can log IPs (read-only, no user data sent)</li>
+    </ul>
+  </div>
+  <p class="meta">Generated by hamza72x &mdash; June 30, 2026</p>
+</div>
+</body>
+</html>

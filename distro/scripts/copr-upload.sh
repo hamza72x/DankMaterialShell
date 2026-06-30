@@ -45,7 +45,7 @@ cd ~/rpmbuild/SOURCES
 # Download source tarball from GitHub releases
 echo "📦 Downloading source tarball for v${VERSION}..."
 if [ ! -f ~/rpmbuild/SOURCES/dms-qml.tar.gz ]; then
-    wget -O ~/rpmbuild/SOURCES/dms-qml.tar.gz "https://github.com/AvengeMedia/DankMaterialShell/releases/download/v${VERSION}/dms-qml.tar.gz" || {
+    wget -O ~/rpmbuild/SOURCES/dms-qml.tar.gz "https://github.com/hamza72x/DankMaterialShell/releases/download/v${VERSION}/dms-qml.tar.gz" || {
         echo "❌ Failed to download dms-qml.tar.gz for v${VERSION}"
         exit 1
     }

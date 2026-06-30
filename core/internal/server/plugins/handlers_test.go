@@ -153,7 +153,7 @@ func TestHandleSearchMissingQuery(t *testing.T) {
 func TestSortPluginInfoByFirstParty(t *testing.T) {
 	plugins := []PluginInfo{
 		{Name: "third-party", Repo: "https://github.com/other/test"},
-		{Name: "first-party", Repo: "https://github.com/AvengeMedia/test"},
+		{Name: "first-party", Repo: "https://github.com/hamza72x/test"},
 	}
 
 	SortPluginInfoByFirstParty(plugins)
@@ -226,11 +226,11 @@ func TestPluginInfoFromPluginIncludesScreenshot(t *testing.T) {
 	info := pluginInfoFromPlugin(coreplugins.Plugin{
 		ID:         "dankVault",
 		Name:       "Vault",
-		Repo:       "https://github.com/AvengeMedia/dms-plugins",
-		Screenshot: "https://github.com/AvengeMedia/dms-plugins/blob/master/DankNotepadModule/screenshot.png",
+		Repo:       "https://github.com/hamza72x/dms-plugins",
+		Screenshot: "https://github.com/hamza72x/dms-plugins/blob/master/DankNotepadModule/screenshot.png",
 	})
 
-	assert.Equal(t, "https://raw.githubusercontent.com/AvengeMedia/dms-plugins/master/DankNotepadModule/screenshot.png", info.Screenshot)
+	assert.Equal(t, "https://raw.githubusercontent.com/hamza72x/dms-plugins/master/DankNotepadModule/screenshot.png", info.Screenshot)
 	assert.True(t, info.FirstParty)
 }
 

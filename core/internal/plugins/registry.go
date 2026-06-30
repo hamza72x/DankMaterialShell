@@ -11,7 +11,7 @@ import (
 	"github.com/spf13/afero"
 )
 
-const registryRepo = "https://github.com/AvengeMedia/dms-plugin-registry.git"
+const registryRepo = "https://github.com/hamza72x/dms-plugin-registry.git"
 
 type Plugin struct {
 	ID           string   `json:"id"`

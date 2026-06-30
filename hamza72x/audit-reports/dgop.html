@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DMS Audit — dgop</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: #0f0f1a;
+  color: #e0e0e8;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+.header {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border-bottom: 1px solid #2a2a4a;
+  padding: 2rem 0;
+  text-align: center;
+}
+.header h1 { font-size: 1.8rem; color: #fff; margin-bottom: 0.3rem; }
+.header p { color: #8888aa; font-size: 0.95rem; }
+.container { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
+.back { display: inline-block; margin-bottom: 1.5rem; color: #6c8cff; text-decoration: none; font-size: 0.9rem; }
+.back:hover { text-decoration: underline; }
+.card {
+  background: #1a1a2e;
+  border: 1px solid #2a2a4a;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.card h2 {
+  color: #ccc;
+  font-size: 1.05rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #2a2a4a;
+}
+.verdict-safe {
+  display: inline-block;
+  color: #4ade80;
+  font-weight: 700;
+  background: rgba(74, 222, 128, 0.1);
+  padding: 0.3rem 0.8rem;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+.field { margin-bottom: 0.75rem; }
+.field-label { color: #8888aa; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+.field-value { color: #e0e0e8; margin-top: 0.2rem; }
+a { color: #6c8cff; text-decoration: none; }
+a:hover { text-decoration: underline; }
+ul { padding-left: 1.5rem; margin-top: 0.3rem; }
+li { margin-bottom: 0.3rem; color: #ccc; }
+code { background: #2a2a4a; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.9rem; color: #f0a0c0; }
+.meta { text-align: center; margin-top: 2rem; color: #555; font-size: 0.85rem; }
+table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; }
+th, td { padding: 0.5rem 0.75rem; text-align: left; border-bottom: 1px solid #1f1f3a; font-size: 0.9rem; }
+th { color: #8888aa; font-weight: 600; }
+.note { background: #1f1f3a; border-left: 3px solid #6c8cff; padding: 0.75rem 1rem; margin-top: 0.75rem; border-radius: 0 6px 6px 0; }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>DMS Security Audit</h1>
+  <p>hamza72x fork &mdash; Audit Date: June 30, 2026</p>
+</div>
+<div class="container">
+  <a class="back" href="index.html">&larr; Back to Index</a>
+
+  <div class="card">
+    <h2>Overview</h2>
+    <span class="verdict-safe">SAFE</span>
+    <div class="field">
+      <div class="field-label">Component</div>
+      <div class="field-value">dgop</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Forked From</div>
+      <div class="field-value"><a href="https://github.com/AvengeMedia/dgop">https://github.com/AvengeMedia/dgop</a></div>
+    </div>
+    <div class="field">
+      <div class="field-label">Fork URL</div>
+      <div class="field-value"><a href="https://github.com/hamza72x/dgop">https://github.com/hamza72x/dgop</a></div>
+    </div>
+    <div class="field">
+      <div class="field-label">Community</div>
+      <div class="field-value">125 stars, MIT license, 3 contributors, 122 commits</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Purpose</h2>
+    <p>Stateless system monitoring CLI + REST API. Reads CPU, memory, disk, network, GPU, and process metrics from Linux pseudo-filesystems (<code>/proc</code>, <code>/sys</code>) and presents data via CLI (pretty-printed or JSON) or a local REST API on port 63484. Provides a TUI mode (bubbletea-based interactive monitor).</p>
+  </div>
+
+  <div class="card">
+    <h2>Language &amp; Ecosystem</h2>
+    <div class="field">
+      <div class="field-label">Language</div>
+      <div class="field-value">Go (98%)</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Key Dependencies</div>
+      <div class="field-value">
+        <table>
+          <tr><th>Package</th><th>Purpose</th><th>Trust</th></tr>
+          <tr><td>shirou/gopsutil/v4</td><td>System metrics (core lib)</td><td>10k+ stars</td></tr>
+          <tr><td>spf13/cobra</td><td>CLI framework</td><td>Standard Go CLI</td></tr>
+          <tr><td>charmbracelet/bubbletea</td><td>TUI framework</td><td>Popular</td></tr>
+          <tr><td>danielgtaylor/huma/v2</td><td>OpenAPI/REST framework</td><td>Well-known</td></tr>
+          <tr><td>go-chi/chi/v5</td><td>HTTP router</td><td>Widely used</td></tr>
+          <tr><td>fsnotify/fsnotify</td><td>File change notifications</td><td>Standard</td></tr>
+          <tr><td>golang.org/x/sync</td><td>Concurrency utils</td><td>Go team official</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Network Activity</h2>
+    <p><strong>ZERO outbound network calls.</strong> The program never phones home or contacts external servers.</p>
+    <div class="note">
+      <strong>Local API server (optional, user-started):</strong>
+      <ul style="margin-top:0.5rem;">
+        <li>Binds <code>:63484</code> when <code>dgop server</code> is run</li>
+        <li>Serves system metrics via REST API</li>
+        <li>The <code>/docs</code> page loads <code>cdn.jsdelivr.net</code> script in the browser (NOT fetched by the binary)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Process Execution</h2>
+    <p><strong>Only ONE <code>exec.Command</code> in the entire codebase:</strong></p>
+    <ul>
+      <li><code>nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader,nounits</code></li>
+      <li>Purpose: Query NVIDIA GPU temperature</li>
+      <li>Risk: NONE &mdash; hardcoded binary name and flags, no user input, no shell invocation</li>
+      <li>Only runs if GPU driver is detected as "nvidia"</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>File Access (All Read-Only)</h2>
+    <table>
+      <tr><th>Path</th><th>Purpose</th></tr>
+      <tr><td><code>/sys/class/hwmon/*/</code></td><td>CPU/GPU temperatures</td></tr>
+      <tr><td><code>/sys/class/thermal/thermal_zone*/</code></td><td>Thermal zones</td></tr>
+      <tr><td><code>/proc/cpuinfo</code></td><td>CPU model/frequency</td></tr>
+      <tr><td><code>/proc/stat</code>, <code>/proc/meminfo</code></td><td>CPU/memory metrics</td></tr>
+      <tr><td><code>/sys/bus/pci/devices/*/</code></td><td>GPU detection</td></tr>
+      <tr><td><code>/usr/share/hwdata/pci.ids</code></td><td>PCI device names</td></tr>
+      <tr><td><code>/proc/{pid}/smaps_rollup</code></td><td>Process memory</td></tr>
+      <tr><td><code>/etc/os-release</code></td><td>Distribution name</td></tr>
+    </table>
+    <p style="margin-top:0.75rem;"><strong>File writes: NONE.</strong> The program writes absolutely nothing to disk.</p>
+  </div>
+
+  <div class="card">
+    <h2>Security Concerns</h2>
+    <ul>
+      <li><strong>None critical.</strong></li>
+      <li>API server binds on all interfaces (<code>:63484</code>) not just localhost. On network-exposed machines, anyone could query system metrics. Acceptable for desktop use.</li>
+      <li>No authentication on the API server.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Verdict</h2>
+    <span class="verdict-safe">SAFE</span>
+    <p style="margin-top:0.5rem;">Zero outbound network calls. Single hardcoded <code>exec.Command</code> (nvidia-smi with fixed flags). All file operations are read-only from standard Linux system paths. No file writes anywhere. No telemetry, analytics, or data collection. No obfuscated code. All dependencies are mainstream, well-audited Go libraries.</p>
+  </div>
+
+  <p class="meta">Generated by hamza72x &mdash; June 30, 2026</p>
+</div>
+</body>
+</html>

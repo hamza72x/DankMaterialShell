@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DMS Audit — niri</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: #0f0f1a;
+  color: #e0e0e8;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+.header {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border-bottom: 1px solid #2a2a4a;
+  padding: 2rem 0;
+  text-align: center;
+}
+.header h1 { font-size: 1.8rem; color: #fff; margin-bottom: 0.3rem; }
+.header p { color: #8888aa; font-size: 0.95rem; }
+.container { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
+.back { display: inline-block; margin-bottom: 1.5rem; color: #6c8cff; text-decoration: none; font-size: 0.9rem; }
+.back:hover { text-decoration: underline; }
+.card {
+  background: #1a1a2e;
+  border: 1px solid #2a2a4a;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.card h2 {
+  color: #ccc;
+  font-size: 1.05rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #2a2a4a;
+}
+.verdict-safe {
+  display: inline-block;
+  color: #4ade80;
+  font-weight: 700;
+  background: rgba(74, 222, 128, 0.1);
+  padding: 0.3rem 0.8rem;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+.field { margin-bottom: 0.75rem; }
+.field-label { color: #8888aa; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+.field-value { color: #e0e0e8; margin-top: 0.2rem; }
+a { color: #6c8cff; text-decoration: none; }
+a:hover { text-decoration: underline; }
+ul { padding-left: 1.5rem; margin-top: 0.3rem; }
+li { margin-bottom: 0.3rem; color: #ccc; }
+code { background: #2a2a4a; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.9rem; color: #f0a0c0; }
+.meta { text-align: center; margin-top: 2rem; color: #555; font-size: 0.85rem; }
+table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; }
+th, td { padding: 0.5rem 0.75rem; text-align: left; border-bottom: 1px solid #1f1f3a; font-size: 0.9rem; }
+th { color: #8888aa; font-weight: 600; }
+.note { background: #1f1f3a; border-left: 3px solid #6c8cff; padding: 0.75rem 1rem; margin-top: 0.75rem; border-radius: 0 6px 6px 0; }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>DMS Security Audit</h1>
+  <p>hamza72x fork &mdash; Audit Date: June 30, 2026</p>
+</div>
+<div class="container">
+  <a class="back" href="index.html">&larr; Back to Index</a>
+
+  <div class="card">
+    <h2>Overview</h2>
+    <span class="verdict-safe">SAFE</span>
+    <div class="field">
+      <div class="field-label">Component</div>
+      <div class="field-value">niri</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Forked From</div>
+      <div class="field-value"><a href="https://github.com/YaLTeR/niri">https://github.com/YaLTeR/niri</a></div>
+    </div>
+    <div class="field">
+      <div class="field-label">Fork URL</div>
+      <div class="field-value"><a href="https://github.com/hamza72x/niri">https://github.com/hamza72x/niri</a></div>
+    </div>
+    <div class="field">
+      <div class="field-label">Community</div>
+      <div class="field-value">3k+ stars, GPL-3.0 license</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Language</div>
+      <div class="field-value">Rust</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Purpose</h2>
+    <p>A scrollable tiling Wayland compositor that provides window management with a unique infinite horizontal scrolling paradigm. One of the compositor options supported by DMS.</p>
+  </div>
+
+  <div class="card">
+    <h2>Language &amp; Ecosystem</h2>
+    <div class="field">
+      <div class="field-label">Key Dependencies</div>
+      <div class="field-value">
+        <table>
+          <tr><th>Crate</th><th>Purpose</th><th>Notes</th></tr>
+          <tr><td>smithay</td><td>Compositor framework</td><td>Pinned to specific git revision (good practice)</td></tr>
+          <tr><td>calloop</td><td>Event loop</td><td>Standard async I/O for Wayland compositors</td></tr>
+          <tr><td>wayland-server</td><td>Wayland protocol server</td><td>Core compositor requirement</td></tr>
+          <tr><td>zbus</td><td>DBus client</td><td>Local system bus communication only</td></tr>
+          <tr><td>pipewire</td><td>Screen capture</td><td>Optional, local IPC only</td></tr>
+          <tr><td>libinput</td><td>Input handling</td><td>Keyboard/mouse/touchpad</td></tr>
+          <tr><td>drm-ffi</td><td>Display management</td><td>DRM/KMS access</td></tr>
+          <tr><td>pango</td><td>Text rendering</td><td>Font layout engine</td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">Networking Crates in Cargo.toml</div>
+      <div class="field-value"><strong>ZERO.</strong> No reqwest, hyper, tokio, curl, ureq, or any HTTP/networking library present.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Network Activity</h2>
+    <p><strong>ZERO outbound network calls.</strong> Only local Unix socket IPC.</p>
+    <div class="note">
+      <strong>IPC mechanisms (all local):</strong>
+      <ul style="margin-top:0.5rem;">
+        <li><code>WAYLAND_DISPLAY</code> &mdash; local Wayland socket for client communication</li>
+        <li><code>NIRI_SOCKET</code> &mdash; local Unix socket for niri IPC (niri msg commands)</li>
+        <li>DBus (via zbus) &mdash; local system/session bus only</li>
+      </ul>
+    </div>
+    <p style="margin-top:0.75rem;"><strong>No telemetry. No update checks. No analytics.</strong></p>
+  </div>
+
+  <div class="card">
+    <h2>Build System &amp; CI</h2>
+    <ul>
+      <li><code>build.rs</code>: Minimal &mdash; only uses <code>pkg-config</code> to detect local libinput version. No URL fetches, no downloads.</li>
+      <li><strong>CI:</strong> Standard Rust build/test pipeline. Release workflow vendors dependencies. No suspicious third-party GitHub Actions.</li>
+      <li><strong>Smithay dependency:</strong> Pinned to specific git revision (prevents supply chain attacks via upstream changes)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Process Execution</h2>
+    <p>Only spawns local processes:</p>
+    <ul>
+      <li><code>systemctl</code> &mdash; for session target management (local systemd)</li>
+      <li><code>dbus-update-activation-environment</code> &mdash; propagates environment variables to DBus session (local)</li>
+      <li>User-configured <code>spawn_at_startup</code> commands &mdash; explicitly configured by user in niri config file</li>
+    </ul>
+    <div class="note">All spawned processes are either local system utilities or explicitly user-configured. No hidden or unexpected process spawning.</div>
+  </div>
+
+  <div class="card">
+    <h2>Security Concerns</h2>
+    <ul>
+      <li><strong>None critical.</strong></li>
+      <li>Written in Rust (memory-safe by default)</li>
+      <li>No networking crates means no attack surface for remote exploitation</li>
+      <li>All IPC is local Unix socket based</li>
+      <li>Significant community oversight (3k+ stars, active development)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Verdict</h2>
+    <span class="verdict-safe">SAFE</span>
+    <p style="margin-top:0.5rem;">ZERO networking crates in Cargo.toml confirmed. No reqwest, hyper, tokio, or any HTTP library. All IPC via local Unix sockets only (WAYLAND_DISPLAY, NIRI_SOCKET). build.rs only calls pkg-config locally. Smithay pinned to specific git revision. No telemetry, no update checks, no analytics. Written in Rust for memory safety. Fully safe.</p>
+  </div>
+
+  <p class="meta">Generated by hamza72x &mdash; June 30, 2026</p>
+</div>
+</body>
+</html>

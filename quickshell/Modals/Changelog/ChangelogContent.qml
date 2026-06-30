@@ -119,7 +119,7 @@ Column {
                 iconName: "smartphone"
                 title: "Phone Connect"
                 description: "KDE Connect & Valent"
-                onClicked: Qt.openUrlExternally("https://github.com/AvengeMedia/dms-plugins/tree/master/DankKDEConnect")
+                onClicked: Qt.openUrlExternally("https://github.com/hamza72x/dms-plugins/tree/master/DankKDEConnect")
             }
 
             ChangelogFeatureCard {

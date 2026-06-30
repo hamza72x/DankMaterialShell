@@ -342,7 +342,7 @@ func offerReclone(dmsPath string) bool {
 	}
 
 	fmt.Println("Cloning fresh copy...")
-	cloneCmd := exec.Command("git", "clone", "https://github.com/AvengeMedia/DankMaterialShell.git", dmsPath)
+	cloneCmd := exec.Command("git", "clone", "https://github.com/hamza72x/DankMaterialShell.git", dmsPath)
 	cloneCmd.Stdout = os.Stdout
 	cloneCmd.Stderr = os.Stderr
 	if err := cloneCmd.Run(); err != nil {
@@ -393,7 +393,7 @@ func updateDMSBinary() error {
 	}
 
 	fmt.Println("Fetching latest release version...")
-	cmd := exec.Command("curl", "-s", "https://api.github.com/repos/AvengeMedia/DankMaterialShell/releases/latest")
+	cmd := exec.Command("curl", "-s", "https://api.github.com/repos/hamza72x/DankMaterialShell/releases/latest")
 	output, err := cmd.Output()
 	if err != nil {
 		return fmt.Errorf("failed to fetch latest release: %w", err)
@@ -422,8 +422,8 @@ func updateDMSBinary() error {
 	}
 	defer os.RemoveAll(tempDir)
 
-	binaryURL := fmt.Sprintf("https://github.com/AvengeMedia/DankMaterialShell/releases/download/%s/dms-cli-%s.gz", version, arch)
-	checksumURL := fmt.Sprintf("https://github.com/AvengeMedia/DankMaterialShell/releases/download/%s/dms-cli-%s.gz.sha256", version, arch)
+	binaryURL := fmt.Sprintf("https://github.com/hamza72x/DankMaterialShell/releases/download/%s/dms-cli-%s.gz", version, arch)
+	checksumURL := fmt.Sprintf("https://github.com/hamza72x/DankMaterialShell/releases/download/%s/dms-cli-%s.gz.sha256", version, arch)
 
 	binaryPath := filepath.Join(tempDir, "dms.gz")
 	checksumPath := filepath.Join(tempDir, "dms.gz.sha256")

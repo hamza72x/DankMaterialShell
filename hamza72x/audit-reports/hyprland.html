@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DMS Audit — Hyprland</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: #0f0f1a;
+  color: #e0e0e8;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+.header {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border-bottom: 1px solid #2a2a4a;
+  padding: 2rem 0;
+  text-align: center;
+}
+.header h1 { font-size: 1.8rem; color: #fff; margin-bottom: 0.3rem; }
+.header p { color: #8888aa; font-size: 0.95rem; }
+.container { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
+.back { display: inline-block; margin-bottom: 1.5rem; color: #6c8cff; text-decoration: none; font-size: 0.9rem; }
+.back:hover { text-decoration: underline; }
+.card {
+  background: #1a1a2e;
+  border: 1px solid #2a2a4a;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.card h2 {
+  color: #ccc;
+  font-size: 1.05rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #2a2a4a;
+}
+.verdict-safe {
+  display: inline-block;
+  color: #4ade80;
+  font-weight: 700;
+  background: rgba(74, 222, 128, 0.1);
+  padding: 0.3rem 0.8rem;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+.field { margin-bottom: 0.75rem; }
+.field-label { color: #8888aa; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+.field-value { color: #e0e0e8; margin-top: 0.2rem; }
+a { color: #6c8cff; text-decoration: none; }
+a:hover { text-decoration: underline; }
+ul { padding-left: 1.5rem; margin-top: 0.3rem; }
+li { margin-bottom: 0.3rem; color: #ccc; }
+code { background: #2a2a4a; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.9rem; color: #f0a0c0; }
+.meta { text-align: center; margin-top: 2rem; color: #555; font-size: 0.85rem; }
+table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; }
+th, td { padding: 0.5rem 0.75rem; text-align: left; border-bottom: 1px solid #1f1f3a; font-size: 0.9rem; }
+th { color: #8888aa; font-weight: 600; }
+.note { background: #1f1f3a; border-left: 3px solid #6c8cff; padding: 0.75rem 1rem; margin-top: 0.75rem; border-radius: 0 6px 6px 0; }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>DMS Security Audit</h1>
+  <p>hamza72x fork &mdash; Audit Date: June 30, 2026</p>
+</div>
+<div class="container">
+  <a class="back" href="index.html">&larr; Back to Index</a>
+
+  <div class="card">
+    <h2>Overview</h2>
+    <span class="verdict-safe">SAFE</span>
+    <div class="field">
+      <div class="field-label">Component</div>
+      <div class="field-value">Hyprland</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Forked From</div>
+      <div class="field-value"><a href="https://github.com/hyprwm/Hyprland">https://github.com/hyprwm/Hyprland</a></div>
+    </div>
+    <div class="field">
+      <div class="field-label">Fork URL</div>
+      <div class="field-value"><a href="https://github.com/hamza72x/Hyprland">https://github.com/hamza72x/Hyprland</a></div>
+    </div>
+    <div class="field">
+      <div class="field-label">Community</div>
+      <div class="field-value">36.6k stars, BSD-3-Clause license, 7,533 commits</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Language</div>
+      <div class="field-value">C++26</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Purpose</h2>
+    <p>A dynamic tiling Wayland compositor known for smooth animations, extensive customization, and broad hardware support. The primary compositor option for DMS.</p>
+  </div>
+
+  <div class="card">
+    <h2>Language &amp; Ecosystem</h2>
+    <div class="field">
+      <div class="field-label">Main Compositor Libraries</div>
+      <div class="field-value">
+        <table>
+          <tr><th>Library</th><th>Purpose</th><th>Category</th></tr>
+          <tr><td>OpenGL, cairo, pixman</td><td>Rendering</td><td>Graphics</td></tr>
+          <tr><td>libinput, xkbcommon</td><td>Input handling</td><td>Input</td></tr>
+          <tr><td>wayland-server</td><td>Wayland protocol</td><td>Display</td></tr>
+          <tr><td>hyprlang</td><td>Config parser</td><td>Internal lib</td></tr>
+          <tr><td>hyprcursor</td><td>Cursor themes</td><td>Internal lib</td></tr>
+        </table>
+        <p style="margin-top:0.5rem;"><strong>ZERO networking libraries linked.</strong> Only graphics, input, display, and internal libs.</p>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">CMake FetchContent</div>
+      <div class="field-value">Only <code>glaze v7.2.0</code> (JSON parser) &mdash; used exclusively by hyprpm</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Submodules</div>
+      <div class="field-value">
+        <ul>
+          <li><code>hyprland-protocols</code> &mdash; custom Wayland protocol extensions</li>
+          <li><code>udis86</code> &mdash; x86 disassembler (for plugin ABI)</li>
+          <li><code>tracy</code> &mdash; profiler (opt-in only, disabled by default)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Network Activity</h2>
+    <p><strong>ZERO network calls during normal operation.</strong></p>
+    <div class="note">
+      <strong>Component-by-component analysis:</strong>
+      <ul style="margin-top:0.5rem;">
+        <li><strong>Main compositor:</strong> Zero networking. Only renders, manages windows, and handles input.</li>
+        <li><strong>hyprctl:</strong> Local Unix socket IPC only &mdash; <code>AF_UNIX</code> at <code>/run/user/&lt;uid&gt;/hypr/&lt;instance&gt;/.socket.sock</code></li>
+        <li><strong>hyprpm (plugin manager, separate binary):</strong> Uses <code>git clone</code> only on explicit user command with Y/n confirmation prompt. Never runs automatically.</li>
+      </ul>
+    </div>
+    <p style="margin-top:0.75rem;"><strong>No telemetry. No analytics. No phone-home. No update checker.</strong></p>
+  </div>
+
+  <div class="card">
+    <h2>Crash Reporter Analysis</h2>
+    <p><strong>Writes to LOCAL FILE ONLY.</strong></p>
+    <ul>
+      <li>Output path: <code>$XDG_CACHE_HOME/hyprland/hyprlandCrashReport&lt;pid&gt;.txt</code></li>
+      <li><strong>NO network transmission.</strong> The crash report is a local text file only.</li>
+      <li>Can be disabled entirely: <code>HYPRLAND_NO_CRASHREPORTER=1</code></li>
+    </ul>
+    <div class="note">
+      <strong>Telemetry controversy:</strong> Investigated thoroughly &mdash; ZERO telemetry code exists in the current codebase. Past rumors were unfounded. No analytics, no data collection, no remote reporting of any kind.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Privilege Requirements</h2>
+    <p>Runs as a regular user. Accesses GPU via DRM/KMS and input devices via libinput &mdash; standard for any Wayland compositor. No root privileges required.</p>
+  </div>
+
+  <div class="card">
+    <h2>Security Concerns</h2>
+    <ul>
+      <li><strong>None critical.</strong></li>
+      <li>hyprpm (plugin manager) does <code>git clone</code> but only on explicit user command with confirmation &mdash; acceptable UX pattern</li>
+      <li>Tracy profiler is opt-in only (disabled by default) &mdash; no risk in normal builds</li>
+      <li>36.6k stars = extremely high community scrutiny</li>
+      <li>Crash reporter is local-only, can be disabled via environment variable</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Verdict</h2>
+    <span class="verdict-safe">SAFE</span>
+    <p style="margin-top:0.5rem;">ZERO networking libraries in the main compositor. hyprctl uses only local Unix sockets. Crash reporter writes LOCAL files only (no network transmission, disableable via env var). hyprpm only fetches on explicit user command with confirmation. Telemetry controversy investigated &mdash; ZERO telemetry code exists. 36.6k stars with extreme community oversight. Fully safe.</p>
+  </div>
+
+  <p class="meta">Generated by hamza72x &mdash; June 30, 2026</p>
+</div>
+</body>
+</html>

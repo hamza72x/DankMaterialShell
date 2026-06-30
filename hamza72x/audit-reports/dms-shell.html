@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DMS Audit — DankMaterialShell</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: #0f0f1a;
+  color: #e0e0e8;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+.header {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border-bottom: 1px solid #2a2a4a;
+  padding: 2rem 0;
+  text-align: center;
+}
+.header h1 { font-size: 1.8rem; color: #fff; margin-bottom: 0.3rem; }
+.header p { color: #8888aa; font-size: 0.95rem; }
+.container { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
+.back { display: inline-block; margin-bottom: 1.5rem; color: #6c8cff; text-decoration: none; font-size: 0.9rem; }
+.back:hover { text-decoration: underline; }
+.card {
+  background: #1a1a2e;
+  border: 1px solid #2a2a4a;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.card h2 {
+  color: #ccc;
+  font-size: 1.05rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #2a2a4a;
+}
+.verdict-safe {
+  display: inline-block;
+  color: #4ade80;
+  font-weight: 700;
+  background: rgba(74, 222, 128, 0.1);
+  padding: 0.3rem 0.8rem;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+.field { margin-bottom: 0.75rem; }
+.field-label { color: #8888aa; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+.field-value { color: #e0e0e8; margin-top: 0.2rem; }
+a { color: #6c8cff; text-decoration: none; }
+a:hover { text-decoration: underline; }
+ul { padding-left: 1.5rem; margin-top: 0.3rem; }
+li { margin-bottom: 0.3rem; color: #ccc; }
+code { background: #2a2a4a; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.9rem; color: #f0a0c0; }
+.concern { color: #fbbf24; }
+.meta { text-align: center; margin-top: 2rem; color: #555; font-size: 0.85rem; }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>DMS Security Audit</h1>
+  <p>hamza72x fork &mdash; Audit Date: June 30, 2026</p>
+</div>
+<div class="container">
+  <a class="back" href="index.html">&larr; Back to Index</a>
+
+  <div class="card">
+    <h2>Overview</h2>
+    <span class="verdict-safe">SAFE</span>
+    <div class="field">
+      <div class="field-label">Component</div>
+      <div class="field-value">DankMaterialShell</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Forked From</div>
+      <div class="field-value"><a href="https://github.com/AvengeMedia/DankMaterialShell">https://github.com/AvengeMedia/DankMaterialShell</a></div>
+    </div>
+    <div class="field">
+      <div class="field-label">Fork URL</div>
+      <div class="field-value"><a href="https://github.com/hamza72x/DankMaterialShell">https://github.com/hamza72x/DankMaterialShell</a></div>
+    </div>
+    <div class="field">
+      <div class="field-label">Stars</div>
+      <div class="field-value">7.1k</div>
+    </div>
+    <div class="field">
+      <div class="field-label">License</div>
+      <div class="field-value">MIT</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Purpose</h2>
+    <p>A full-featured Linux desktop shell providing a status bar, control center, notification system, and plugin framework. Built on Quickshell (QML) with a Go backend for system integration.</p>
+  </div>
+
+  <div class="card">
+    <h2>Language &amp; Ecosystem</h2>
+    <div class="field">
+      <div class="field-label">Languages</div>
+      <div class="field-value">Go (28%) + QML (64%) + misc (8%)</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Build System</div>
+      <div class="field-value">Go modules, built from source</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Network Activity</h2>
+    <p style="margin-bottom:0.75rem;">The following external network calls were identified:</p>
+    <ul>
+      <li><strong>GitHub API</strong> &mdash; version check (HTTPS)</li>
+      <li><strong>ip-api.com</strong> &mdash; geolocation for weather widget (HTTP)</li>
+      <li><strong>api.danklinux.com</strong> &mdash; plugin metadata, GET-only (HTTPS)</li>
+      <li><strong>open-meteo.com</strong> &mdash; weather data (HTTPS)</li>
+      <li><strong>nominatim.openstreetmap.org</strong> &mdash; reverse geocoding (HTTPS)</li>
+    </ul>
+    <p style="margin-top:0.75rem; color:#aaa;">No telemetry, no analytics, no data exfiltration detected. All calls are for user-facing features.</p>
+  </div>
+
+  <div class="card">
+    <h2>Privilege Requirements</h2>
+    <p>Uses <code>sudo</code> / <code>doas</code> / <code>run0</code> via the internal <code>privesc</code> package. This is standard and expected for system package management operations (installing/removing packages). Privilege escalation is user-initiated only.</p>
+    <p style="margin-top:0.5rem;">All external program execution targets standard Linux system tools: <code>pacman</code>, <code>apt</code>, <code>dnf</code>, <code>systemctl</code>, etc.</p>
+  </div>
+
+  <div class="card">
+    <h2>Security Concerns</h2>
+    <ul>
+      <li class="concern"><strong>Minor:</strong> <code>ip-api.com</code> is accessed over HTTP, not HTTPS. This is a privacy risk (ISP/network can see geolocation request) but not a direct security vulnerability.</li>
+      <li class="concern"><strong>Minor:</strong> Plugin feedback API at <code>api.danklinux.com</code> can log client IPs. However, this endpoint is read-only and no user data is sent.</li>
+    </ul>
+    <p style="margin-top:0.75rem;">No obfuscated code, no hidden functionality, no suspicious patterns found.</p>
+  </div>
+
+  <div class="card">
+    <h2>Verdict</h2>
+    <span class="verdict-safe">SAFE</span>
+    <p style="margin-top:0.5rem;">DankMaterialShell is safe to use. Network activity is limited to user-facing features (weather, plugin registry). Privilege escalation follows standard Linux patterns. No data exfiltration or telemetry detected.</p>
+  </div>
+
+  <p class="meta">Generated by hamza72x &mdash; June 30, 2026</p>
+</div>
+</body>
+</html>

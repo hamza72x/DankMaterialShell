@@ -35,7 +35,7 @@ func (m *ManualPackageInstaller) parseLatestTagFromGitOutput(output string) stri
 // getLatestQuickshellTag fetches the latest tag from the quickshell repository
 func (m *ManualPackageInstaller) getLatestQuickshellTag(ctx context.Context) string {
 	tagCmd := exec.CommandContext(ctx, "git", "ls-remote", "--tags", "--sort=-v:refname",
-		"https://github.com/quickshell-mirror/quickshell.git")
+		"https://github.com/hamza72x/quickshell.git")
 	tagOutput, err := tagCmd.Output()
 	if err != nil {
 		m.log(fmt.Sprintf("Warning: failed to fetch quickshell tags: %v", err))
@@ -119,10 +119,10 @@ func (m *ManualPackageInstaller) installDgop(ctx context.Context, sudoPassword s
 		Progress:    0.1,
 		Step:        "Cloning dgop repository...",
 		IsComplete:  false,
-		CommandInfo: "git clone https://github.com/AvengeMedia/dgop.git",
+		CommandInfo: "git clone https://github.com/hamza72x/dgop.git",
 	}
 
-	cloneCmd := exec.CommandContext(ctx, "git", "clone", "https://github.com/AvengeMedia/dgop.git", tmpDir)
+	cloneCmd := exec.CommandContext(ctx, "git", "clone", "https://github.com/hamza72x/dgop.git", tmpDir)
 	if err := cloneCmd.Run(); err != nil {
 		m.logError("failed to clone dgop repository", err)
 		return fmt.Errorf("failed to clone dgop repository: %w", err)
@@ -177,10 +177,10 @@ func (m *ManualPackageInstaller) installNiri(ctx context.Context, sudoPassword s
 		Progress:    0.2,
 		Step:        "Cloning niri repository...",
 		IsComplete:  false,
-		CommandInfo: "git clone https://github.com/YaLTeR/niri.git",
+		CommandInfo: "git clone https://github.com/hamza72x/niri.git",
 	}
 
-	cloneCmd := exec.CommandContext(ctx, "git", "clone", "https://github.com/YaLTeR/niri.git", buildDir)
+	cloneCmd := exec.CommandContext(ctx, "git", "clone", "https://github.com/hamza72x/niri.git", buildDir)
 	if err := cloneCmd.Run(); err != nil {
 		return fmt.Errorf("failed to clone niri: %w", err)
 	}
@@ -253,20 +253,20 @@ func (m *ManualPackageInstaller) installQuickshell(ctx context.Context, variant 
 		Progress:    0.1,
 		Step:        "Cloning quickshell repository...",
 		IsComplete:  false,
-		CommandInfo: "git clone https://github.com/quickshell-mirror/quickshell.git",
+		CommandInfo: "git clone https://github.com/hamza72x/quickshell.git",
 	}
 
 	var cloneCmd *exec.Cmd
 	if forceQuickshellGit || variant == deps.VariantGit {
-		cloneCmd = exec.CommandContext(ctx, "git", "clone", "https://github.com/quickshell-mirror/quickshell.git", tmpDir)
+		cloneCmd = exec.CommandContext(ctx, "git", "clone", "https://github.com/hamza72x/quickshell.git", tmpDir)
 	} else {
 		latestTag := m.getLatestQuickshellTag(ctx)
 		if latestTag != "" {
 			m.log(fmt.Sprintf("Using latest quickshell tag: %s", latestTag))
-			cloneCmd = exec.CommandContext(ctx, "git", "clone", "--branch", latestTag, "https://github.com/quickshell-mirror/quickshell.git", tmpDir)
+			cloneCmd = exec.CommandContext(ctx, "git", "clone", "--branch", latestTag, "https://github.com/hamza72x/quickshell.git", tmpDir)
 		} else {
 			m.log("Warning: failed to fetch latest tag, using default branch")
-			cloneCmd = exec.CommandContext(ctx, "git", "clone", "https://github.com/quickshell-mirror/quickshell.git", tmpDir)
+			cloneCmd = exec.CommandContext(ctx, "git", "clone", "https://github.com/hamza72x/quickshell.git", tmpDir)
 		}
 	}
 	if err := cloneCmd.Run(); err != nil {
@@ -359,10 +359,10 @@ func (m *ManualPackageInstaller) installHyprland(ctx context.Context, sudoPasswo
 		Progress:    0.1,
 		Step:        "Cloning Hyprland repository...",
 		IsComplete:  false,
-		CommandInfo: "git clone --recursive https://github.com/hyprwm/Hyprland.git",
+		CommandInfo: "git clone --recursive https://github.com/hamza72x/Hyprland.git",
 	}
 
-	cloneCmd := exec.CommandContext(ctx, "git", "clone", "--recursive", "https://github.com/hyprwm/Hyprland.git", tmpDir)
+	cloneCmd := exec.CommandContext(ctx, "git", "clone", "--recursive", "https://github.com/hamza72x/Hyprland.git", tmpDir)
 	if err := cloneCmd.Run(); err != nil {
 		return fmt.Errorf("failed to clone Hyprland: %w", err)
 	}
@@ -422,10 +422,10 @@ func (m *ManualPackageInstaller) installGhostty(ctx context.Context, sudoPasswor
 		Progress:    0.1,
 		Step:        "Cloning Ghostty repository...",
 		IsComplete:  false,
-		CommandInfo: "git clone https://github.com/ghostty-org/ghostty.git",
+		CommandInfo: "git clone https://github.com/hamza72x/ghostty.git",
 	}
 
-	cloneCmd := exec.CommandContext(ctx, "git", "clone", "https://github.com/ghostty-org/ghostty.git", tmpDir)
+	cloneCmd := exec.CommandContext(ctx, "git", "clone", "https://github.com/hamza72x/ghostty.git", tmpDir)
 	if err := cloneCmd.Run(); err != nil {
 		return fmt.Errorf("failed to clone Ghostty: %w", err)
 	}
@@ -472,10 +472,10 @@ func (m *ManualPackageInstaller) installMatugen(ctx context.Context, sudoPasswor
 		Progress:    0.1,
 		Step:        "Installing matugen via cargo...",
 		IsComplete:  false,
-		CommandInfo: "cargo install matugen",
+		CommandInfo: "cargo install --git https://github.com/hamza72x/matugen",
 	}
 
-	installCmd := exec.CommandContext(ctx, "cargo", "install", "matugen")
+	installCmd := exec.CommandContext(ctx, "cargo", "install", "--git", "https://github.com/hamza72x/matugen")
 	if err := m.runWithProgressStep(installCmd, progressChan, PhaseSystemPackages, 0.1, 0.7, "Building matugen..."); err != nil {
 		return fmt.Errorf("failed to install matugen: %w", err)
 	}
@@ -520,7 +520,7 @@ func (m *ManualPackageInstaller) installDankMaterialShell(ctx context.Context, v
 			Progress:    0.90,
 			Step:        "Cloning DankMaterialShell...",
 			IsComplete:  false,
-			CommandInfo: "git clone https://github.com/AvengeMedia/DankMaterialShell.git",
+			CommandInfo: "git clone https://github.com/hamza72x/DankMaterialShell.git",
 		}
 
 		configDir := filepath.Dir(dmsPath)
@@ -529,7 +529,7 @@ func (m *ManualPackageInstaller) installDankMaterialShell(ctx context.Context, v
 		}
 
 		cloneCmd := exec.CommandContext(ctx, "git", "clone",
-			"https://github.com/AvengeMedia/DankMaterialShell.git", dmsPath)
+			"https://github.com/hamza72x/DankMaterialShell.git", dmsPath)
 		if err := cloneCmd.Run(); err != nil {
 			return fmt.Errorf("failed to clone DankMaterialShell: %w", err)
 		}
@@ -621,10 +621,10 @@ func (m *ManualPackageInstaller) installXwaylandSatellite(ctx context.Context, s
 		Progress:    0.1,
 		Step:        "Installing xwayland-satellite via cargo...",
 		IsComplete:  false,
-		CommandInfo: "cargo install --git https://github.com/Supreeeme/xwayland-satellite --tag v0.7",
+		CommandInfo: "cargo install --git https://github.com/hamza72x/xwayland-satellite --tag v0.7",
 	}
 
-	installCmd := exec.CommandContext(ctx, "cargo", "install", "--git", "https://github.com/Supreeeme/xwayland-satellite", "--tag", "v0.7")
+	installCmd := exec.CommandContext(ctx, "cargo", "install", "--git", "https://github.com/hamza72x/xwayland-satellite", "--tag", "v0.7")
 	if err := m.runWithProgressStep(installCmd, progressChan, PhaseSystemPackages, 0.1, 0.7, "Building xwayland-satellite..."); err != nil {
 		return fmt.Errorf("failed to install xwayland-satellite: %w", err)
 	}

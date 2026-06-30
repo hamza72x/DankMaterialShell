@@ -683,20 +683,20 @@ func (o *OpenSUSEDistribution) installQuickshell(ctx context.Context, variant de
 		Progress:    0.1,
 		Step:        "Cloning quickshell repository...",
 		IsComplete:  false,
-		CommandInfo: "git clone https://github.com/quickshell-mirror/quickshell.git",
+		CommandInfo: "git clone https://github.com/hamza72x/quickshell.git",
 	}
 
 	var cloneCmd *exec.Cmd
 	if forceQuickshellGit || variant == deps.VariantGit {
-		cloneCmd = exec.CommandContext(ctx, "git", "clone", "https://github.com/quickshell-mirror/quickshell.git", tmpDir)
+		cloneCmd = exec.CommandContext(ctx, "git", "clone", "https://github.com/hamza72x/quickshell.git", tmpDir)
 	} else {
 		latestTag := o.getLatestQuickshellTag(ctx)
 		if latestTag != "" {
 			o.log(fmt.Sprintf("Using latest quickshell tag: %s", latestTag))
-			cloneCmd = exec.CommandContext(ctx, "git", "clone", "--branch", latestTag, "https://github.com/quickshell-mirror/quickshell.git", tmpDir)
+			cloneCmd = exec.CommandContext(ctx, "git", "clone", "--branch", latestTag, "https://github.com/hamza72x/quickshell.git", tmpDir)
 		} else {
 			o.log("Warning: failed to fetch latest tag, using default branch")
-			cloneCmd = exec.CommandContext(ctx, "git", "clone", "https://github.com/quickshell-mirror/quickshell.git", tmpDir)
+			cloneCmd = exec.CommandContext(ctx, "git", "clone", "https://github.com/hamza72x/quickshell.git", tmpDir)
 		}
 	}
 	if err := cloneCmd.Run(); err != nil {

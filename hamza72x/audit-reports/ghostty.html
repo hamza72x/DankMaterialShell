@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DMS Audit — Ghostty</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: #0f0f1a;
+  color: #e0e0e8;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+.header {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border-bottom: 1px solid #2a2a4a;
+  padding: 2rem 0;
+  text-align: center;
+}
+.header h1 { font-size: 1.8rem; color: #fff; margin-bottom: 0.3rem; }
+.header p { color: #8888aa; font-size: 0.95rem; }
+.container { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
+.back { display: inline-block; margin-bottom: 1.5rem; color: #6c8cff; text-decoration: none; font-size: 0.9rem; }
+.back:hover { text-decoration: underline; }
+.card {
+  background: #1a1a2e;
+  border: 1px solid #2a2a4a;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.card h2 {
+  color: #ccc;
+  font-size: 1.05rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #2a2a4a;
+}
+.verdict-safe {
+  display: inline-block;
+  color: #4ade80;
+  font-weight: 700;
+  background: rgba(74, 222, 128, 0.1);
+  padding: 0.3rem 0.8rem;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+.field { margin-bottom: 0.75rem; }
+.field-label { color: #8888aa; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+.field-value { color: #e0e0e8; margin-top: 0.2rem; }
+a { color: #6c8cff; text-decoration: none; }
+a:hover { text-decoration: underline; }
+ul { padding-left: 1.5rem; margin-top: 0.3rem; }
+li { margin-bottom: 0.3rem; color: #ccc; }
+code { background: #2a2a4a; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.9rem; color: #f0a0c0; }
+.meta { text-align: center; margin-top: 2rem; color: #555; font-size: 0.85rem; }
+table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; }
+th, td { padding: 0.5rem 0.75rem; text-align: left; border-bottom: 1px solid #1f1f3a; font-size: 0.9rem; }
+th { color: #8888aa; font-weight: 600; }
+.note { background: #1f1f3a; border-left: 3px solid #6c8cff; padding: 0.75rem 1rem; margin-top: 0.75rem; border-radius: 0 6px 6px 0; }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>DMS Security Audit</h1>
+  <p>hamza72x fork &mdash; Audit Date: June 30, 2026</p>
+</div>
+<div class="container">
+  <a class="back" href="index.html">&larr; Back to Index</a>
+
+  <div class="card">
+    <h2>Overview</h2>
+    <span class="verdict-safe">SAFE</span>
+    <div class="field">
+      <div class="field-label">Component</div>
+      <div class="field-value">Ghostty</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Forked From</div>
+      <div class="field-value"><a href="https://github.com/ghostty-org/ghostty">https://github.com/ghostty-org/ghostty</a></div>
+    </div>
+    <div class="field">
+      <div class="field-label">Fork URL</div>
+      <div class="field-value"><a href="https://github.com/hamza72x/ghostty">https://github.com/hamza72x/ghostty</a></div>
+    </div>
+    <div class="field">
+      <div class="field-label">Community</div>
+      <div class="field-value">57.3k stars, MIT license</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Author</div>
+      <div class="field-value">Mitchell Hashimoto (HashiCorp co-founder)</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Language</div>
+      <div class="field-value">Zig (78.9%), Swift (11.3%), C (4.7%)</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Purpose</h2>
+    <p>A GPU-accelerated terminal emulator focused on performance, correctness, and native platform integration. Used as the default terminal emulator in DMS.</p>
+  </div>
+
+  <div class="card">
+    <h2>Language &amp; Ecosystem</h2>
+    <div class="field">
+      <div class="field-label">Core Zig Source</div>
+      <div class="field-value"><strong>ZERO networking code.</strong> No <code>std.net</code>, <code>std.http</code>, <code>TcpStream</code>, <code>HttpClient</code> anywhere in the codebase.</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Event Loop (libxev)</div>
+      <div class="field-value">Used for file watches and timers only &mdash; NOT network sockets</div>
+    </div>
+    <div class="field">
+      <div class="field-label">Build System</div>
+      <div class="field-value">Dependencies fetched from <code>deps.files.ghostty.org</code> (official CDN mirror). Every dependency has a cryptographic hash verification. Standard Zig package manager behavior.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Network Activity</h2>
+    <p><strong>ZERO network calls at runtime.</strong></p>
+    <div class="note">
+      <strong>Detailed analysis of potential network-related features:</strong>
+      <ul style="margin-top:0.5rem;">
+        <li><strong>Sentry crash reporting:</strong> DISK-ONLY. Custom Transport implementation replaces HTTP with local file write to <code>$XDG_STATE_HOME/ghostty/crash/*.ghosttycrash</code></li>
+        <li>Code comment explicitly states: <em>"Ghostty by default does NOT send any data over the network."</em></li>
+        <li><strong>macOS Sparkle auto-update:</strong> Disabled by default (<code>SUEnableAutomaticChecks = false</code>). Opt-in only. <strong>Linux has NO auto-update mechanism whatsoever.</strong></li>
+      </ul>
+    </div>
+    <p style="margin-top:0.75rem;"><strong>No telemetry. No analytics. No keystroke logging. No terminal content sent externally.</strong></p>
+  </div>
+
+  <div class="card">
+    <h2>Crash Reporting &mdash; Privacy Analysis</h2>
+    <p>Ghostty uses Sentry SDK but with a <strong>custom disk-only transport</strong>:</p>
+    <ul>
+      <li>Crash data written to: <code>$XDG_STATE_HOME/ghostty/crash/*.ghosttycrash</code></li>
+      <li>The standard HTTP transport is completely replaced with a file writer</li>
+      <li><strong>"Crash reports are NOT automatically sent anywhere off your machine."</strong></li>
+      <li>Users must manually opt-in to submit crash reports (separate action)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Privilege Requirements</h2>
+    <p>Runs as a regular user process. Allocates PTY devices for shell sessions (standard terminal behavior). GPU access for rendering. No elevated privileges required.</p>
+  </div>
+
+  <div class="card">
+    <h2>Security Concerns</h2>
+    <ul>
+      <li><strong>None critical.</strong></li>
+      <li>macOS Sparkle is disabled by default and does not exist on Linux &mdash; not relevant to DMS</li>
+      <li>Sentry crash reporting is local-only (custom disk transport) &mdash; no data leaves the machine</li>
+      <li>Build deps use cryptographic hashes (supply chain protection)</li>
+      <li>57.3k stars = one of the most scrutinized terminal emulators in existence</li>
+      <li>Author (Mitchell Hashimoto) is a high-profile, trusted open-source developer</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Verdict</h2>
+    <span class="verdict-safe">SAFE</span>
+    <p style="margin-top:0.5rem;">ZERO networking code in core Zig source confirmed. No std.net, std.http, TcpStream, or HttpClient anywhere. Sentry crash reporting uses disk-only custom transport (never sends data over network). macOS Sparkle disabled by default and nonexistent on Linux. Build deps use cryptographic hashes. No telemetry, no analytics, no keystroke logging. 57.3k stars with extreme community oversight. Fully safe.</p>
+  </div>
+
+  <p class="meta">Generated by hamza72x &mdash; June 30, 2026</p>
+</div>
+</body>
+</html>
