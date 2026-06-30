@@ -120,17 +120,17 @@ func (u *UbuntuDistribution) GetPackageMappingWithVariants(wm deps.WindowManager
 		// DMS packages from PPAs
 		"dms (DankMaterialShell)": u.getDmsMapping(variants["dms (DankMaterialShell)"]),
 		"quickshell":              u.getQuickshellMapping(variants["quickshell"]),
-		"dms-greeter":             {Name: "dms-greeter", Repository: RepoTypePPA, RepoURL: "ppa:avengemedia/danklinux"},
-		"matugen":                 {Name: "matugen", Repository: RepoTypePPA, RepoURL: "ppa:avengemedia/danklinux"},
-		"dgop":                    {Name: "dgop", Repository: RepoTypePPA, RepoURL: "ppa:avengemedia/danklinux"},
-		"ghostty":                 {Name: "ghostty", Repository: RepoTypePPA, RepoURL: "ppa:avengemedia/danklinux"},
+		"dms-greeter":             {Name: "dms-greeter", Repository: RepoTypeManual},
+		"matugen":                 {Name: "matugen", Repository: RepoTypeManual},
+		"dgop":                    {Name: "dgop", Repository: RepoTypeManual},
+		"ghostty":                 {Name: "ghostty", Repository: RepoTypeManual},
 	}
 
 	switch wm {
 	case deps.WindowManagerHyprland:
 		// Use the cppiber PPA for Hyprland
-		packages["hyprland"] = PackageMapping{Name: "hyprland", Repository: RepoTypePPA, RepoURL: "ppa:cppiber/hyprland"}
-		packages["hyprctl"] = PackageMapping{Name: "hyprland", Repository: RepoTypePPA, RepoURL: "ppa:cppiber/hyprland"}
+		packages["hyprland"] = PackageMapping{Name: "hyprland", Repository: RepoTypeManual}
+		packages["hyprctl"] = PackageMapping{Name: "hyprland", Repository: RepoTypeManual}
 		packages["jq"] = PackageMapping{Name: "jq", Repository: RepoTypeSystem}
 	case deps.WindowManagerNiri:
 		niriVariant := variants["niri"]
@@ -143,30 +143,30 @@ func (u *UbuntuDistribution) GetPackageMappingWithVariants(wm deps.WindowManager
 
 func (u *UbuntuDistribution) getDmsMapping(variant deps.PackageVariant) PackageMapping {
 	if variant == deps.VariantGit {
-		return PackageMapping{Name: "dms-git", Repository: RepoTypePPA, RepoURL: "ppa:avengemedia/dms-git"}
+		return PackageMapping{Name: "dms-git", Repository: RepoTypeManual}
 	}
-	return PackageMapping{Name: "dms", Repository: RepoTypePPA, RepoURL: "ppa:avengemedia/dms"}
+	return PackageMapping{Name: "dms", Repository: RepoTypeManual}
 }
 
 func (u *UbuntuDistribution) getQuickshellMapping(variant deps.PackageVariant) PackageMapping {
 	if forceQuickshellGit || variant == deps.VariantGit {
-		return PackageMapping{Name: "quickshell-git", Repository: RepoTypePPA, RepoURL: "ppa:avengemedia/danklinux"}
+		return PackageMapping{Name: "quickshell-git", Repository: RepoTypeManual}
 	}
-	return PackageMapping{Name: "quickshell", Repository: RepoTypePPA, RepoURL: "ppa:avengemedia/danklinux"}
+	return PackageMapping{Name: "quickshell", Repository: RepoTypeManual}
 }
 
 func (u *UbuntuDistribution) getNiriMapping(variant deps.PackageVariant) PackageMapping {
 	if variant == deps.VariantGit {
-		return PackageMapping{Name: "niri-git", Repository: RepoTypePPA, RepoURL: "ppa:avengemedia/danklinux"}
+		return PackageMapping{Name: "niri-git", Repository: RepoTypeManual}
 	}
-	return PackageMapping{Name: "niri", Repository: RepoTypePPA, RepoURL: "ppa:avengemedia/danklinux"}
+	return PackageMapping{Name: "niri", Repository: RepoTypeManual}
 }
 
 func (u *UbuntuDistribution) getXwaylandSatelliteMapping(variant deps.PackageVariant) PackageMapping {
 	if variant == deps.VariantGit {
-		return PackageMapping{Name: "xwayland-satellite-git", Repository: RepoTypePPA, RepoURL: "ppa:avengemedia/danklinux"}
+		return PackageMapping{Name: "xwayland-satellite-git", Repository: RepoTypeManual}
 	}
-	return PackageMapping{Name: "xwayland-satellite", Repository: RepoTypePPA, RepoURL: "ppa:avengemedia/danklinux"}
+	return PackageMapping{Name: "xwayland-satellite", Repository: RepoTypeManual}
 }
 
 func (u *UbuntuDistribution) InstallPrerequisites(ctx context.Context, sudoPassword string, progressChan chan<- InstallProgressMsg) error {

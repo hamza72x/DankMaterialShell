@@ -23,21 +23,37 @@ import (
 )
 
 var updateCmd = &cobra.Command{
-	Use:     "update",
-	Short:   "Update DankMaterialShell to the latest version",
-	Long:    "Update DankMaterialShell to the latest version using the appropriate package manager for your distribution",
+	Use:   "update",
+	Short: "Update DankMaterialShell (disabled in hamza72x fork)",
+	Long: `Updates are disabled in this security-hardened fork.
+
+This fork pins all dependencies to audited versions under the hamza72x org.
+Automatic updates would bypass supply-chain verification.
+
+To update manually:
+  1. Review upstream changes at https://github.com/AvengeMedia/DankMaterialShell
+  2. Merge into your fork after auditing
+  3. Rebuild and reinstall`,
 	PreRunE: findConfig,
 	Run: func(cmd *cobra.Command, args []string) {
-		runUpdate()
+		fmt.Println("Updates are disabled in this security-hardened fork (hamza72x).")
+		fmt.Println()
+		fmt.Println("This fork pins all dependencies to audited versions.")
+		fmt.Println("Automatic updates would bypass supply-chain verification.")
+		fmt.Println()
+		fmt.Println("To update manually:")
+		fmt.Println("  1. Review upstream changes at https://github.com/AvengeMedia/DankMaterialShell")
+		fmt.Println("  2. Merge into your fork after auditing")
+		fmt.Println("  3. Rebuild and reinstall")
 	},
 }
 
 var updateCheckCmd = &cobra.Command{
 	Use:   "check",
-	Short: "Check if updates are available for DankMaterialShell",
-	Long:  "Check for available updates without performing the actual update",
+	Short: "Check for updates (disabled in hamza72x fork)",
 	Run: func(cmd *cobra.Command, args []string) {
-		runUpdateCheck()
+		fmt.Println("Update checks are disabled in this security-hardened fork (hamza72x).")
+		fmt.Println("Updates are managed manually via git merge + audit.")
 	},
 }
 

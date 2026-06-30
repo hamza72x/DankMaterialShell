@@ -131,10 +131,10 @@ func (d *DebianDistribution) GetPackageMappingWithVariants(wm deps.WindowManager
 		// DMS packages from OBS with variant support
 		"dms (DankMaterialShell)": d.getDmsMapping(variants["dms (DankMaterialShell)"]),
 		"quickshell":              d.getQuickshellMapping(variants["quickshell"]),
-		"dms-greeter":             {Name: "dms-greeter", Repository: RepoTypeOBS, RepoURL: "home:AvengeMedia:danklinux"},
-		"matugen":                 {Name: "matugen", Repository: RepoTypeOBS, RepoURL: "home:AvengeMedia:danklinux"},
-		"dgop":                    {Name: "dgop", Repository: RepoTypeOBS, RepoURL: "home:AvengeMedia:danklinux"},
-		"ghostty":                 {Name: "ghostty", Repository: RepoTypeOBS, RepoURL: "home:AvengeMedia:danklinux"},
+		"dms-greeter":             {Name: "dms-greeter", Repository: RepoTypeManual},
+		"matugen":                 {Name: "matugen", Repository: RepoTypeManual},
+		"dgop":                    {Name: "dgop", Repository: RepoTypeManual},
+		"ghostty":                 {Name: "ghostty", Repository: RepoTypeManual},
 	}
 
 	if wm == deps.WindowManagerNiri {
@@ -148,30 +148,30 @@ func (d *DebianDistribution) GetPackageMappingWithVariants(wm deps.WindowManager
 
 func (d *DebianDistribution) getDmsMapping(variant deps.PackageVariant) PackageMapping {
 	if variant == deps.VariantGit {
-		return PackageMapping{Name: "dms-git", Repository: RepoTypeOBS, RepoURL: "home:AvengeMedia:dms-git"}
+		return PackageMapping{Name: "dms-git", Repository: RepoTypeManual}
 	}
-	return PackageMapping{Name: "dms", Repository: RepoTypeOBS, RepoURL: "home:AvengeMedia:dms"}
+	return PackageMapping{Name: "dms", Repository: RepoTypeManual}
 }
 
 func (d *DebianDistribution) getQuickshellMapping(variant deps.PackageVariant) PackageMapping {
 	if forceQuickshellGit || variant == deps.VariantGit {
-		return PackageMapping{Name: "quickshell-git", Repository: RepoTypeOBS, RepoURL: "home:AvengeMedia:danklinux"}
+		return PackageMapping{Name: "quickshell-git", Repository: RepoTypeManual}
 	}
-	return PackageMapping{Name: "quickshell", Repository: RepoTypeOBS, RepoURL: "home:AvengeMedia:danklinux"}
+	return PackageMapping{Name: "quickshell", Repository: RepoTypeManual}
 }
 
 func (d *DebianDistribution) getNiriMapping(variant deps.PackageVariant) PackageMapping {
 	if variant == deps.VariantGit {
-		return PackageMapping{Name: "niri-git", Repository: RepoTypeOBS, RepoURL: "home:AvengeMedia:danklinux"}
+		return PackageMapping{Name: "niri-git", Repository: RepoTypeManual}
 	}
-	return PackageMapping{Name: "niri", Repository: RepoTypeOBS, RepoURL: "home:AvengeMedia:danklinux"}
+	return PackageMapping{Name: "niri", Repository: RepoTypeManual}
 }
 
 func (d *DebianDistribution) getXwaylandSatelliteMapping(variant deps.PackageVariant) PackageMapping {
 	if variant == deps.VariantGit {
-		return PackageMapping{Name: "xwayland-satellite-git", Repository: RepoTypeOBS, RepoURL: "home:AvengeMedia:danklinux"}
+		return PackageMapping{Name: "xwayland-satellite-git", Repository: RepoTypeManual}
 	}
-	return PackageMapping{Name: "xwayland-satellite", Repository: RepoTypeOBS, RepoURL: "home:AvengeMedia:danklinux"}
+	return PackageMapping{Name: "xwayland-satellite", Repository: RepoTypeManual}
 }
 
 func (d *DebianDistribution) InstallPrerequisites(ctx context.Context, sudoPassword string, progressChan chan<- InstallProgressMsg) error {
@@ -425,7 +425,7 @@ func (d *DebianDistribution) enableOBSRepos(ctx context.Context, obsPkgs []Packa
 		if pkg.RepoURL != "" && !enabledRepos[pkg.RepoURL] {
 			d.log(fmt.Sprintf("Enabling OBS repository: %s", pkg.RepoURL))
 
-			// RepoURL format: "home:AvengeMedia:danklinux"
+			// RepoURL format: "home:user:project"
 			repoPath := strings.ReplaceAll(pkg.RepoURL, ":", ":/")
 			repoName := strings.ReplaceAll(pkg.RepoURL, ":", "-")
 			baseURL := fmt.Sprintf("https://download.opensuse.org/repositories/%s/%s", repoPath, debianVersion)

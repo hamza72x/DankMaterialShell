@@ -15,6 +15,8 @@ This fork mitigates that risk by:
 
 ## Installation
 
+One-liner:
+
 ```sh
 curl -fsSL https://raw.githubusercontent.com/hamza72x/DankMaterialShell/main/hamza72x/install.sh | sh
 ```
@@ -23,6 +25,18 @@ The installer will:
 - Verify your system is Linux (amd64 or arm64)
 - Download the latest release from the `hamza72x` org
 - Verify the SHA256 checksum before executing anything
+- Build all dependencies from source using our forks (never from upstream repos)
+
+## Post-Install: No Upstream Updates
+
+After installation, **all DMS self-update mechanisms are disabled**:
+
+- `dms update` — blocked, prints explanation
+- `dms update check` — blocked, no network calls made
+- Version check — reports local version only, never contacts GitHub
+- No COPR/PPA/OBS packages from AvengeMedia are ever used
+
+**Your system package manager (dnf, pacman, apt, etc.) is NOT affected** — official distro packages update normally. Only DMS-specific remote update paths are blocked.
 
 ## Forked Repositories
 

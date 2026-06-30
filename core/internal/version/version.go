@@ -1,7 +1,6 @@
 package version
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"os/exec"
@@ -71,93 +70,13 @@ func (d *DefaultVersionFetcher) GetCurrentVersion(dmsPath string) (string, error
 }
 
 func (d *DefaultVersionFetcher) GetLatestVersion(dmsPath string) (string, error) {
-	if _, err := os.Stat(filepath.Join(dmsPath, ".git")); err == nil {
-		originalDir, err := os.Getwd()
-		if err != nil {
-			return "", err
-		}
-		defer func() {
-			if err := os.Chdir(originalDir); err != nil {
-				log.Warnf("failed to change back to original directory: %v", err)
-			}
-		}()
-
-		if err := os.Chdir(dmsPath); err != nil {
-			return "", fmt.Errorf("failed to change to DMS directory: %w", err)
-		}
-
-		currentRefCmd := exec.Command("git", "symbolic-ref", "-q", "HEAD")
-		currentRefOutput, _ := currentRefCmd.Output()
-		onBranch := len(currentRefOutput) > 0
-
-		if !onBranch {
-			tagCmd := exec.Command("git", "describe", "--exact-match", "--tags", "HEAD")
-			if _, err := tagCmd.Output(); err == nil {
-				// Add timeout to git fetch to prevent hanging
-				fetchCmd := exec.Command("timeout", "5s", "git", "fetch", "origin", "--tags", "--quiet")
-				if err := fetchCmd.Run(); err != nil {
-					log.Debugf("git fetch tags failed (continuing with local tags): %v", err)
-				}
-
-				latestTagCmd := exec.Command("git", "tag", "-l", "v*", "--sort=-version:refname")
-				latestTagOutput, err := latestTagCmd.Output()
-				if err != nil {
-					return "", fmt.Errorf("failed to get latest tag: %w", err)
-				}
-
-				tags := strings.Split(strings.TrimSpace(string(latestTagOutput)), "\n")
-				if len(tags) == 0 || tags[0] == "" {
-					return "", fmt.Errorf("no version tags found")
-				}
-				return tags[0], nil
-			}
-		} else {
-			branchCmd := exec.Command("git", "rev-parse", "--abbrev-ref", "HEAD")
-			branchOutput, err := branchCmd.Output()
-			if err != nil {
-				return "", fmt.Errorf("failed to get current branch: %w", err)
-			}
-			currentBranch := strings.TrimSpace(string(branchOutput))
-
-			// Add timeout to git fetch to prevent hanging
-			fetchCmd := exec.Command("timeout", "5s", "git", "fetch", "origin", currentBranch, "--quiet")
-			if err := fetchCmd.Run(); err != nil {
-				log.Debugf("git fetch branch failed (continuing with local ref): %v", err)
-			}
-
-			remoteRevCmd := exec.Command("git", "rev-parse", "--short", fmt.Sprintf("origin/%s", currentBranch))
-			remoteRevOutput, err := remoteRevCmd.Output()
-			if err != nil {
-				return "", fmt.Errorf("failed to get remote revision: %w", err)
-			}
-			remoteRev := strings.TrimSpace(string(remoteRevOutput))
-			return fmt.Sprintf("%s@%s", currentBranch, remoteRev), nil
-		}
-	}
-
-	// Add timeout to prevent hanging when GitHub is down
-	cmd := exec.Command("curl", "-s", "--max-time", "5", "https://api.github.com/repos/hamza72x/DankMaterialShell/releases/latest")
-	output, err := cmd.Output()
+	// Updates disabled in hamza72x fork — never contact any remote for version checks.
+	// Always report current version as latest to suppress "update available" notifications.
+	current, err := d.GetCurrentVersion(dmsPath)
 	if err != nil {
-		return "", fmt.Errorf("failed to fetch latest release: %w", err)
+		return "unknown", nil
 	}
-
-	var result struct {
-		TagName string `json:"tag_name"`
-	}
-	if err := json.Unmarshal(output, &result); err != nil {
-		for _, line := range strings.Split(string(output), "\n") {
-			if strings.Contains(line, "\"tag_name\"") {
-				parts := strings.Split(line, "\"")
-				if len(parts) >= 4 {
-					return parts[3], nil
-				}
-			}
-		}
-		return "", fmt.Errorf("failed to parse latest version: %w", err)
-	}
-
-	return result.TagName, nil
+	return current, nil
 }
 
 // defaultFetcher is used by the public functions
