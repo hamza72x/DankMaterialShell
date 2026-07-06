@@ -172,8 +172,12 @@ dnf)
 
     info "Installing Qt6 and Quickshell dev packages..."
     sudo dnf install -y \
-        qt6-qtbase-devel qt6-qtdeclarative-devel qt6-qtshadertools-devel \
-        qt6-qtwayland-devel qt6-qtmultimedia-devel \
+        qt6-qtbase-devel qt6-qtbase-private-devel \
+        qt6-qtdeclarative-devel qt6-qtdeclarative-private-devel \
+        qt6-qtshadertools-devel \
+        qt6-qtwayland-devel qt6-qtwayland-private-devel \
+        qt6-qtmultimedia-devel \
+        qt6-qtsvg-devel \
         pipewire-devel pam-devel polkit-devel \
         jemalloc-devel 2>/dev/null || warn "Some optional Qt6/Wayland packages not found (may be fine)"
 
