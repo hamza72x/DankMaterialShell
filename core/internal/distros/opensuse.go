@@ -446,74 +446,9 @@ func (o *OpenSUSEDistribution) extractPackageNames(packages []PackageMapping) []
 	return names
 }
 
+// enableOBSRepos is disabled in this fork — no third-party repos allowed.
 func (o *OpenSUSEDistribution) enableOBSRepos(ctx context.Context, obsPkgs []PackageMapping, sudoPassword string, progressChan chan<- InstallProgressMsg) error {
-	enabledRepos := make(map[string]bool)
-
-	osInfo, err := GetOSInfo()
-	if err != nil {
-		return fmt.Errorf("failed to get OS info: %w", err)
-	}
-
-	obsDistroVersion := "openSUSE_Tumbleweed"
-	switch osInfo.Distribution.ID {
-	case "opensuse-leap":
-		obsDistroVersion = fmt.Sprintf("openSUSE_Leap_%s", osInfo.VersionID)
-	case "opensuse-slowroll":
-		obsDistroVersion = "openSUSE_Slowroll"
-	}
-
-	for _, pkg := range obsPkgs {
-		if pkg.RepoURL != "" && !enabledRepos[pkg.RepoURL] {
-			o.log(fmt.Sprintf("Enabling OBS repository: %s", pkg.RepoURL))
-
-			// RepoURL format: "home:user:project"
-			repoPath := strings.ReplaceAll(pkg.RepoURL, ":", ":/")
-			repoName := strings.ReplaceAll(pkg.RepoURL, ":", "-")
-			repoURL := fmt.Sprintf("https://download.opensuse.org/repositories/%s/%s/%s.repo",
-				repoPath, obsDistroVersion, pkg.RepoURL)
-
-			checkCmd := exec.CommandContext(ctx, "zypper", "repos", repoName)
-			if checkCmd.Run() == nil {
-				o.log(fmt.Sprintf("OBS repo %s already exists, skipping", pkg.RepoURL))
-				enabledRepos[pkg.RepoURL] = true
-				continue
-			}
-
-			progressChan <- InstallProgressMsg{
-				Phase:       PhaseSystemPackages,
-				Progress:    0.20,
-				Step:        fmt.Sprintf("Enabling OBS repo %s...", pkg.RepoURL),
-				NeedsSudo:   true,
-				CommandInfo: fmt.Sprintf("sudo zypper addrepo %s", repoURL),
-			}
-
-			cmd := privesc.ExecCommand(ctx, sudoPassword,
-				fmt.Sprintf("zypper addrepo -f %s", repoURL))
-			if err := o.runWithProgress(cmd, progressChan, PhaseSystemPackages, 0.20, 0.22); err != nil {
-				o.log(fmt.Sprintf("OBS repo %s add failed (may already exist): %v", pkg.RepoURL, err))
-			}
-
-			enabledRepos[pkg.RepoURL] = true
-			o.log(fmt.Sprintf("OBS repo %s enabled successfully", pkg.RepoURL))
-		}
-	}
-
-	// Refresh repositories with GPG auto-import
-	if len(enabledRepos) > 0 {
-		progressChan <- InstallProgressMsg{
-			Phase:       PhaseSystemPackages,
-			Progress:    0.25,
-			Step:        "Refreshing repositories...",
-			NeedsSudo:   true,
-			CommandInfo: "sudo zypper --gpg-auto-import-keys refresh",
-		}
-
-		refreshCmd := privesc.ExecCommand(ctx, sudoPassword, "zypper --gpg-auto-import-keys refresh")
-		if err := o.runWithProgress(refreshCmd, progressChan, PhaseSystemPackages, 0.25, 0.27); err != nil {
-			return fmt.Errorf("failed to refresh repositories: %w", err)
-		}
-	}
-
+	o.log("WARNING: enableOBSRepos called but third-party repos are disabled in this fork. Skipping.")
 	return nil
 }
 

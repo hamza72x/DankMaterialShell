@@ -452,82 +452,15 @@ func (f *FedoraDistribution) extractPackageNames(packages []PackageMapping) []st
 	return names
 }
 
-// enableTerraRepo registers the persistent Terra repo (via terra-release) so
-// `mangowm` resolves in the DNF phase. $releasever is single-quoted so dnf, not
-// the shell, expands it.
+// enableTerraRepo is disabled in this fork — no third-party repos allowed.
 func (f *FedoraDistribution) enableTerraRepo(ctx context.Context, sudoPassword string, progressChan chan<- InstallProgressMsg) error {
-	// Skip if Terra is already configured
-	if exec.CommandContext(ctx, "sh", "-c",
-		"rpm -q terra-release >/dev/null 2>&1 || test -f /etc/yum.repos.d/terra.repo").Run() == nil {
-		f.log("Terra repository already configured, skipping enable")
-		return nil
-	}
-
-	f.log("Enabling Terra repository (fyralabs) for mango...")
-	cmd := privesc.ExecCommand(ctx, sudoPassword,
-		`dnf install -y --nogpgcheck --repofrompath 'terra,https://repos.fyralabs.com/terra$releasever' terra-release 2>&1`)
-	output, err := cmd.CombinedOutput()
-	if err != nil {
-		f.logError("failed to enable Terra repository", err)
-		f.log(fmt.Sprintf("Terra enable output: %s", string(output)))
-		return fmt.Errorf("failed to enable Terra repository: %w", err)
-	}
-	f.log(fmt.Sprintf("Terra repository enabled: %s", string(output)))
+	f.log("WARNING: enableTerraRepo called but third-party repos are disabled in this fork. Skipping.")
 	return nil
 }
 
+// enableCOPRRepos is disabled in this fork — no third-party repos allowed.
 func (f *FedoraDistribution) enableCOPRRepos(ctx context.Context, coprPkgs []PackageMapping, sudoPassword string, progressChan chan<- InstallProgressMsg) error {
-	enabledRepos := make(map[string]bool)
-
-	for _, pkg := range coprPkgs {
-		if pkg.RepoURL != "" && !enabledRepos[pkg.RepoURL] {
-			f.log(fmt.Sprintf("Enabling COPR repository: %s", pkg.RepoURL))
-			progressChan <- InstallProgressMsg{
-				Phase:       PhaseSystemPackages,
-				Progress:    0.20,
-				Step:        fmt.Sprintf("Enabling COPR repo %s...", pkg.RepoURL),
-				IsComplete:  false,
-				NeedsSudo:   true,
-				CommandInfo: fmt.Sprintf("sudo dnf copr enable -y %s", pkg.RepoURL),
-			}
-
-			cmd := privesc.ExecCommand(ctx, sudoPassword,
-				fmt.Sprintf("dnf copr enable -y %s 2>&1", pkg.RepoURL))
-			output, err := cmd.CombinedOutput()
-			if err != nil {
-				f.logError(fmt.Sprintf("failed to enable COPR repo %s", pkg.RepoURL), err)
-				f.log(fmt.Sprintf("COPR enable command output: %s", string(output)))
-				return fmt.Errorf("failed to enable COPR repo %s: %w", pkg.RepoURL, err)
-			}
-			f.log(fmt.Sprintf("COPR repo %s enabled successfully: %s", pkg.RepoURL, string(output)))
-			enabledRepos[pkg.RepoURL] = true
-
-			// Special handling for niri COPR repo - set priority=1
-			if pkg.RepoURL == "yalter/niri-git" {
-				f.log("Setting priority=1 for niri-git COPR repo...")
-				repoFile := "/etc/yum.repos.d/_copr:copr.fedorainfracloud.org:yalter:niri-git.repo"
-				progressChan <- InstallProgressMsg{
-					Phase:       PhaseSystemPackages,
-					Progress:    0.22,
-					Step:        "Setting niri COPR repo priority...",
-					IsComplete:  false,
-					NeedsSudo:   true,
-					CommandInfo: fmt.Sprintf("echo \"priority=1\" | sudo tee -a %s", repoFile),
-				}
-
-				priorityCmd := privesc.ExecCommand(ctx, sudoPassword,
-					fmt.Sprintf("bash -c 'echo \"priority=1\" | tee -a %s'", repoFile))
-				priorityOutput, err := priorityCmd.CombinedOutput()
-				if err != nil {
-					f.logError("failed to set niri COPR repo priority", err)
-					f.log(fmt.Sprintf("Priority command output: %s", string(priorityOutput)))
-					return fmt.Errorf("failed to set niri COPR repo priority: %w", err)
-				}
-				f.log(fmt.Sprintf("niri COPR repo priority set successfully: %s", string(priorityOutput)))
-			}
-		}
-	}
-
+	f.log("WARNING: enableCOPRRepos called but third-party repos are disabled in this fork. Skipping.")
 	return nil
 }
 
@@ -541,14 +474,10 @@ func (f *FedoraDistribution) installDNFPackages(ctx context.Context, packages []
 	return f.installDNFGroups(ctx, packages, sudoPassword, progressChan, PhaseSystemPackages, "Installing system packages...", 0.40, 0.60)
 }
 
+// installCOPRPackages is disabled in this fork — no third-party repos allowed.
 func (f *FedoraDistribution) installCOPRPackages(ctx context.Context, packages []string, sudoPassword string, progressChan chan<- InstallProgressMsg) error {
-	if len(packages) == 0 {
-		return nil
-	}
-
-	f.log(fmt.Sprintf("Installing COPR packages: %s", strings.Join(packages, ", ")))
-
-	return f.installDNFGroups(ctx, packages, sudoPassword, progressChan, PhaseAURPackages, "Installing COPR packages...", 0.70, 0.85)
+	f.log("WARNING: installCOPRPackages called but third-party repos are disabled in this fork. Skipping.")
+	return nil
 }
 
 func (f *FedoraDistribution) dnfInstallArgs(packages []string, minimal bool) []string {

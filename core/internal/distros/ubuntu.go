@@ -396,54 +396,9 @@ func (u *UbuntuDistribution) extractPackageNames(packages []PackageMapping) []st
 	return names
 }
 
+// enablePPARepos is disabled in this fork — no third-party repos allowed.
 func (u *UbuntuDistribution) enablePPARepos(ctx context.Context, ppaPkgs []PackageMapping, sudoPassword string, progressChan chan<- InstallProgressMsg) error {
-	enabledRepos := make(map[string]bool)
-
-	installPPACmd := privesc.ExecCommand(ctx, sudoPassword,
-		"apt-get install -y software-properties-common")
-	if err := u.runWithProgress(installPPACmd, progressChan, PhaseSystemPackages, 0.15, 0.17); err != nil {
-		return fmt.Errorf("failed to install software-properties-common: %w", err)
-	}
-
-	for _, pkg := range ppaPkgs {
-		if pkg.RepoURL != "" && !enabledRepos[pkg.RepoURL] {
-			u.log(fmt.Sprintf("Enabling PPA repository: %s", pkg.RepoURL))
-			progressChan <- InstallProgressMsg{
-				Phase:       PhaseSystemPackages,
-				Progress:    0.20,
-				Step:        fmt.Sprintf("Enabling PPA repo %s...", pkg.RepoURL),
-				IsComplete:  false,
-				NeedsSudo:   true,
-				CommandInfo: fmt.Sprintf("sudo add-apt-repository -y %s", pkg.RepoURL),
-			}
-
-			cmd := privesc.ExecCommand(ctx, sudoPassword,
-				fmt.Sprintf("add-apt-repository -y %s", pkg.RepoURL))
-			if err := u.runWithProgress(cmd, progressChan, PhaseSystemPackages, 0.20, 0.22); err != nil {
-				u.logError(fmt.Sprintf("failed to enable PPA repo %s", pkg.RepoURL), err)
-				return fmt.Errorf("failed to enable PPA repo %s: %w", pkg.RepoURL, err)
-			}
-			u.log(fmt.Sprintf("PPA repo %s enabled successfully", pkg.RepoURL))
-			enabledRepos[pkg.RepoURL] = true
-		}
-	}
-
-	if len(enabledRepos) > 0 {
-		progressChan <- InstallProgressMsg{
-			Phase:       PhaseSystemPackages,
-			Progress:    0.25,
-			Step:        "Updating package lists...",
-			IsComplete:  false,
-			NeedsSudo:   true,
-			CommandInfo: "sudo apt-get update",
-		}
-
-		updateCmd := privesc.ExecCommand(ctx, sudoPassword, "apt-get update")
-		if err := u.runWithProgress(updateCmd, progressChan, PhaseSystemPackages, 0.25, 0.27); err != nil {
-			return fmt.Errorf("failed to update package lists after adding PPAs: %w", err)
-		}
-	}
-
+	u.log("WARNING: enablePPARepos called but third-party repos are disabled in this fork. Skipping.")
 	return nil
 }
 
@@ -456,13 +411,10 @@ func (u *UbuntuDistribution) installAPTPackages(ctx context.Context, packages []
 	return u.installAPTGroups(ctx, packages, sudoPassword, progressChan, PhaseSystemPackages, "Installing system packages...", 0.40, 0.60)
 }
 
+// installPPAPackages is disabled in this fork — no third-party repos allowed.
 func (u *UbuntuDistribution) installPPAPackages(ctx context.Context, packages []string, sudoPassword string, progressChan chan<- InstallProgressMsg) error {
-	if len(packages) == 0 {
-		return nil
-	}
-
-	u.log(fmt.Sprintf("Installing PPA packages: %s", strings.Join(packages, ", ")))
-	return u.installAPTGroups(ctx, packages, sudoPassword, progressChan, PhaseAURPackages, "Installing PPA packages...", 0.70, 0.85)
+	u.log("WARNING: installPPAPackages called but third-party repos are disabled in this fork. Skipping.")
+	return nil
 }
 
 func (u *UbuntuDistribution) aptInstallArgs(packages []string, minimal bool) []string {
