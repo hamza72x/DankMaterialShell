@@ -179,7 +179,7 @@ dnf)
         qt6-qtmultimedia-devel \
         qt6-qtsvg-devel \
         pipewire-devel pam-devel polkit-devel \
-        jemalloc-devel
+        jemalloc-devel cli11-devel
 
     info "Enabling runtime services..."
     sudo systemctl enable upower power-profiles-daemon
