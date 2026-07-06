@@ -189,6 +189,16 @@ dnf)
     sudo systemctl disable sddm 2>/dev/null || true
     sudo systemctl enable greetd
 
+    info "Configuring greetd to launch Hyprland after login..."
+    sudo tee /etc/greetd/config.toml > /dev/null << 'EOF'
+[terminal]
+vt = 1
+
+[default_session]
+command = "agreety --cmd /usr/bin/start-hyprland"
+user = "greetd"
+EOF
+
     info "Setting default target to graphical (minimal installs default to multi-user)..."
     sudo systemctl set-default graphical.target
     ;;
