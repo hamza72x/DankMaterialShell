@@ -184,9 +184,10 @@ dnf)
     info "Enabling runtime services..."
     sudo systemctl enable upower power-profiles-daemon
 
-    info "Installing and enabling SDDM (display manager)..."
-    sudo dnf install -y sddm
-    sudo systemctl enable sddm
+    info "Installing and enabling greetd (login manager)..."
+    sudo dnf install -y greetd
+    sudo systemctl disable sddm 2>/dev/null || true
+    sudo systemctl enable greetd
 
     info "Setting default target to graphical (minimal installs default to multi-user)..."
     sudo systemctl set-default graphical.target
