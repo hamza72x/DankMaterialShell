@@ -128,7 +128,7 @@ case "$PM" in
 dnf)
     # Core build tools (split into smaller groups for better error handling)
     info "Installing core build tools via dnf..."
-    sudo dnf install -y git make gcc gcc-c++ tar rsync curl gzip coreutils
+    sudo dnf install -y git make gcc gcc-c++ tar rsync curl gzip coreutils meson rpm-build
 
     info "Installing Go..."
     sudo dnf install -y golang
@@ -139,15 +139,46 @@ dnf)
     info "Installing CMake/Ninja..."
     sudo dnf install -y cmake ninja-build pkg-config
 
-    info "Installing Qt6 and Wayland dev packages..."
+    info "Installing runtime services and drivers..."
+    sudo dnf install -y \
+        pipewire pipewire-pulseaudio wireplumber \
+        upower power-profiles-daemon \
+        fontconfig mesa-dri-drivers
+
+    info "Installing Hyprland build dependencies..."
+    sudo dnf install -y --skip-unavailable \
+        wayland-devel wayland-protocols-devel libxkbcommon-devel \
+        cairo-devel pango-devel pixman-devel libdrm-devel \
+        mesa-libgbm-devel mesa-libEGL-devel mesa-libGLES-devel \
+        libinput-devel glib2-devel re2-devel muParser-devel lcms2-devel \
+        libXcursor-devel libuuid-devel xcb-util-errors-devel libxcb-devel \
+        xcb-util-renderutil-devel xcb-util-wm-devel xcb-util-devel \
+        xcb-util-keysyms-devel glslang-devel spirv-tools-devel \
+        vulkan-headers OpenEXR-devel libwebp-devel libjpeg-turbo-devel \
+        libpng-devel file-devel hwdata-devel libseat-devel \
+        libdisplay-info-devel librsvg2-devel tomlplusplus-devel \
+        pugixml-devel libzip-devel readline-devel python3 libffi-devel \
+        iniparser-devel abseil-cpp-devel
+
+    info "Installing Hyprland runtime dependencies..."
+    sudo dnf install -y --skip-unavailable \
+        libwayland-client libwayland-server libwayland-cursor \
+        libxkbcommon mesa-libEGL mesa-libGLES mesa-libgbm libdrm libseat \
+        libdisplay-info cairo pango pixman glslang vulkan-loader libXcursor \
+        libinput xorg-x11-server-Xwayland \
+        glib2 re2 muParser lcms2 libuuid libffi hwdata file-libs polkit \
+        libxcb xcb-util-errors xcb-util-renderutil xcb-util-wm \
+        librsvg2 tomlplusplus pugixml libzip libwebp libjpeg-turbo libpng
+
+    info "Installing Qt6 and Quickshell dev packages..."
     sudo dnf install -y \
         qt6-qtbase-devel qt6-qtdeclarative-devel qt6-qtshadertools-devel \
         qt6-qtwayland-devel qt6-qtmultimedia-devel \
-        wayland-devel wayland-protocols-devel libdrm-devel \
         pipewire-devel pam-devel polkit-devel \
-        libinput-devel libxkbcommon-devel \
-        mesa-libEGL-devel mesa-libGLES-devel \
         jemalloc-devel 2>/dev/null || warn "Some optional Qt6/Wayland packages not found (may be fine)"
+
+    info "Enabling runtime services..."
+    sudo systemctl enable upower power-profiles-daemon
     ;;
 pacman)
     BUILD_PKGS=(
@@ -221,7 +252,23 @@ make dankinstall
 info "Built: core/bin/dankinstall"
 
 # -----------------------------------------------------------
-# Step 5: Run dankinstall
+# Step 5: Pre-deploy DMS QML files (skip clone in dankinstall)
+# -----------------------------------------------------------
+
+step "Pre-deploying DMS shell files"
+
+# dankinstall tries to git clone the (private) DMS repo into ~/.config/quickshell/dms.
+# Since the repo is already on disk (synced via rsync/scp), symlink it instead.
+DMS_QML_DIR="$HOME/.config/quickshell/dms"
+mkdir -p "$(dirname "$DMS_QML_DIR")"
+if [ -L "$DMS_QML_DIR" ] || [ -d "$DMS_QML_DIR" ]; then
+    rm -rf "$DMS_QML_DIR"
+fi
+ln -sfn "$CLONE_DIR/quickshell" "$DMS_QML_DIR"
+info "Symlinked $DMS_QML_DIR → $CLONE_DIR/quickshell"
+
+# -----------------------------------------------------------
+# Step 6: Run dankinstall
 # -----------------------------------------------------------
 
 step "Running dankinstall (interactive TUI)"
@@ -234,7 +281,7 @@ printf "\n"
 ./bin/dankinstall
 
 # -----------------------------------------------------------
-# Step 6: Install dms binary system-wide
+# Step 7: Install dms binary system-wide
 # -----------------------------------------------------------
 
 step "Installing dms binary"
@@ -243,7 +290,7 @@ sudo make install
 info "Installed dms to /usr/local/bin/dms"
 
 # -----------------------------------------------------------
-# Step 7: Install shell files + systemd service
+# Step 8: Install shell files + systemd service
 # -----------------------------------------------------------
 
 step "Installing shell files"

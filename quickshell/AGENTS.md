@@ -27,6 +27,10 @@ This project uses a structured memory bank system with specialized context files
 * **AGENTS-config-variables.md** - Configuration variables reference (if exists)
 * **AGENTS-temp.md** - Temporary scratch pad (only read when referenced)
 
+### Fork-Specific Context (hamza72x)
+
+* **hamza72x/AGENTS.md** - If working on the hamza72x fork deployment, installation, or the `hamza72x/install.sh` script, **read this file first**. It contains the deployment model (rsync to barebone Fedora), hard rules (no upstream URLs, no auto-updates), all modifications made to the installer/build system, and troubleshooting for common build failures.
+
 **Important:** Always reference the active context file first to understand what's currently being worked on and maintain session continuity.
 
 ### Memory Bank System Backups

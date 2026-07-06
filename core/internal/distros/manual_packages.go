@@ -367,31 +367,52 @@ func (m *ManualPackageInstaller) installHyprland(ctx context.Context, sudoPasswo
 		return fmt.Errorf("failed to clone Hyprland: %w", err)
 	}
 
-	checkoutCmd := exec.CommandContext(ctx, "git", "-C", tmpDir, "checkout", "v0.50.1")
-	if err := checkoutCmd.Run(); err != nil {
-		m.log(fmt.Sprintf("Warning: failed to checkout v0.50.1, using main: %v", err))
-	}
-
-	buildCmd := exec.CommandContext(ctx, "make", "all")
-	buildCmd.Dir = tmpDir
-	buildCmd.Env = append(os.Environ(), "TMPDIR="+cacheDir)
-	if err := m.runWithProgressStep(buildCmd, progressChan, PhaseSystemPackages, 0.2, 0.8, "Building Hyprland..."); err != nil {
-		return fmt.Errorf("failed to build Hyprland: %w", err)
-	}
+	// Use the fork's build script which handles building all Hypr ecosystem
+	// libraries from source (hyprutils, hyprlang, hyprgraphics, hyprcursor,
+	// aquamarine, hyprwire, hyprtoolkit, hyprwayland-scanner, Lua 5.5) and
+	// then builds Hyprland itself and packages it as an RPM.
+	buildScript := filepath.Join(tmpDir, "hamza72x", "build-hyprland.sh")
 
 	progressChan <- InstallProgressMsg{
 		Phase:       PhaseSystemPackages,
-		Progress:    0.8,
-		Step:        "Installing Hyprland...",
+		Progress:    0.2,
+		Step:        "Building Hyprland + ecosystem libraries (this will take a while)...",
 		IsComplete:  false,
-		NeedsSudo:   true,
-		CommandInfo: "sudo make install",
+		CommandInfo: "bash hamza72x/build-hyprland.sh",
 	}
 
-	installCmd := privesc.ExecCommand(ctx, sudoPassword, "make install")
-	installCmd.Dir = tmpDir
+	buildCmd := exec.CommandContext(ctx, "bash", buildScript)
+	buildCmd.Dir = tmpDir
+	buildCmd.Env = append(os.Environ(), "TMPDIR="+cacheDir)
+	if err := m.runWithProgressStep(buildCmd, progressChan, PhaseSystemPackages, 0.2, 0.9, "Building Hyprland..."); err != nil {
+		return fmt.Errorf("failed to build Hyprland: %w", err)
+	}
+
+	// Install the resulting RPM
+	progressChan <- InstallProgressMsg{
+		Phase:       PhaseSystemPackages,
+		Progress:    0.9,
+		Step:        "Installing Hyprland RPM...",
+		IsComplete:  false,
+		NeedsSudo:   true,
+		CommandInfo: "sudo dnf install -y hyprland-*.rpm",
+	}
+
+	// Find the built RPM
+	rpmPattern := filepath.Join(tmpDir, "hamza72x", "hyprland-*.rpm")
+	matches, _ := filepath.Glob(rpmPattern)
+	if len(matches) == 0 {
+		// Also check ~/rpmbuild/RPMS
+		rpmPattern = filepath.Join(homeDir, "rpmbuild", "RPMS", "x86_64", "hyprland-*.rpm")
+		matches, _ = filepath.Glob(rpmPattern)
+	}
+	if len(matches) == 0 {
+		return fmt.Errorf("failed to find built Hyprland RPM")
+	}
+
+	installCmd := privesc.ExecCommand(ctx, sudoPassword, fmt.Sprintf("dnf install -y %s", matches[0]))
 	if err := installCmd.Run(); err != nil {
-		return fmt.Errorf("failed to install Hyprland: %w", err)
+		return fmt.Errorf("failed to install Hyprland RPM: %w", err)
 	}
 
 	m.log("Hyprland installed successfully from source")

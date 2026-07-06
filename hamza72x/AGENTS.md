@@ -1,10 +1,103 @@
 # AGENTS.md — hamza72x/DankMaterialShell Fork
 
+## Goal
+
+Deploy DankMaterialShell on a **barebone Fedora 44** machine (192.168.0.185) by syncing this repo via rsync and running `hamza72x/install.sh`. Everything builds from source using `hamza72x/*` forks. No package repos from AvengeMedia, no auto-updates, no trust in upstream orgs at runtime.
+
 ## Purpose of This Repository
 
 This is a **supply-chain hardened fork** of [AvengeMedia/DankMaterialShell](https://github.com/AvengeMedia/DankMaterialShell). Every external dependency that the project clones or downloads at runtime has been forked under the `hamza72x` GitHub account, audited for safety, and all URLs in the source code rewritten to point to those forks.
 
 The goal is simple: **zero trust in upstream orgs at runtime**. If any upstream repo is compromised, this fork remains unaffected until you explicitly sync.
+
+## Deployment Model (rsync + local build)
+
+This is a **private repo**. It is NOT installed via `dnf`, COPR, or any package manager. The workflow is:
+
+1. Develop/edit on the dev machine (this working copy)
+2. `rsync` the repo to the target Fedora machine
+3. Run `bash ~/DankMaterialShell/hamza72x/install.sh` on the target
+
+The target machine at `hamza@192.168.0.185` is a barebone Fedora 44 (no GUI, no compositor, no audio stack, no Qt — just base system + SSH + NetworkManager + bluez).
+
+### Rsync Command
+
+```sh
+rsync -avz --delete --exclude='.git' --exclude='core/bin' --exclude='core/vendor' \
+  /home/hamza/personal/DankMaterialShell/ hamza@192.168.0.185:~/DankMaterialShell/
+```
+
+### Run Installer on Target
+
+```sh
+ssh -t hamza@192.168.0.185 'bash ~/DankMaterialShell/hamza72x/install.sh'
+```
+
+The `-t` flag is required so `sudo` can prompt for a password.
+
+## What `hamza72x/install.sh` Does (Step by Step)
+
+1. **Detects the repo is already on disk** (synced via rsync) — skips GitHub SSH clone
+2. **Installs build dependencies via dnf:**
+   - Core build tools: git, make, gcc, gcc-c++, meson, rpm-build
+   - Go compiler: golang
+   - Rust/Cargo: cargo, rust
+   - CMake/Ninja: cmake, ninja-build, pkg-config
+   - Runtime services: pipewire, pipewire-pulseaudio, wireplumber, upower, power-profiles-daemon, fontconfig, mesa-dri-drivers
+   - Hyprland build deps: glslang-devel, vulkan-headers, cairo-devel, pango-devel, pixman-devel, mesa-libgbm-devel, libseat-devel, libdisplay-info-devel, xcb-util-*, spirv-tools-devel, etc. (full list from `hamza72x/Hyprland` fork's `build-hyprland.sh`)
+   - Hyprland runtime deps: libwayland-*, mesa-libEGL, vulkan-loader, xorg-x11-server-Xwayland, etc.
+   - Qt6/Quickshell dev packages: qt6-qtbase-devel, qt6-qtdeclarative-devel, qt6-qtshadertools-devel, qt6-qtwayland-devel, qt6-qtmultimedia-devel, pipewire-devel, pam-devel, polkit-devel, jemalloc-devel
+3. **Enables system services:** upower, power-profiles-daemon
+4. **Builds `dms` CLI** from `core/` (Go)
+5. **Builds `dankinstall` TUI** from `core/cmd/dankinstall/` (Go)
+6. **Pre-deploys DMS QML files:** Symlinks `~/.config/quickshell/dms` → the repo's `quickshell/` dir (so `dankinstall` doesn't try to clone the private repo)
+7. **Runs `dankinstall` TUI** — interactive compositor/terminal selection, builds from source:
+   - quickshell (C++/CMake from `hamza72x/quickshell`)
+   - hyprland (via `hamza72x/build-hyprland.sh` which builds all Hypr ecosystem libs + Lua 5.5 + Hyprland itself → RPM)
+   - ghostty (Zig from `hamza72x/ghostty`) — or kitty/alacritty from DNF
+   - matugen (Rust via `cargo install --git hamza72x/matugen`)
+   - dgop (Go from `hamza72x/dgop`)
+   - niri (if chosen instead of Hyprland)
+8. **Installs `dms` binary system-wide:** `sudo make install` in `core/`
+9. **Installs shell files + systemd service:** `sudo make install` at repo root
+
+## Key Design Decisions & Fixes Applied
+
+### 1. Private Repo Clone Bypass (Step 6)
+
+**Problem:** `dankinstall`'s `installDankMaterialShell()` function tries to `git clone https://github.com/hamza72x/DankMaterialShell.git` into `~/.config/quickshell/dms`. Since the repo is private, this prompts for credentials and fails.
+
+**Fix:** Before running `dankinstall`, `install.sh` creates a symlink:
+```sh
+ln -sfn "$CLONE_DIR/quickshell" ~/.config/quickshell/dms
+```
+`dankinstall` sees the path already exists, skips the clone, and continues.
+
+### 2. Hyprland Build Process (modified `installHyprland()`)
+
+**Problem:** The original `installHyprland()` in `manual_packages.go` ran `make all` directly. This fails on Fedora 44 because:
+- Fedora ships outdated Hypr ecosystem libs (hyprutils 0.7.1 vs needed 0.13.1)
+- Missing: aquamarine, hyprwire, Lua 5.5
+- `glslang-devel` and other build deps were never installed
+
+**Fix:** Replaced `installHyprland()` to:
+1. Clone `hamza72x/Hyprland` (stays on `main` = v0.55)
+2. Run `bash hamza72x/build-hyprland.sh` which:
+   - Installs all build deps via dnf (idempotent, skips if already present)
+   - Builds from source: hyprwayland-scanner, hyprutils, hyprlang, hyprgraphics, hyprcursor, hyprwire, aquamarine, hyprtoolkit, hyprland-guiutils, Lua 5.5
+   - Builds Hyprland itself
+   - Packages as RPM
+3. Installs the resulting RPM via `sudo dnf install -y`
+
+### 3. Missing Runtime Packages
+
+**Problem:** Barebone Fedora has no audio stack, no display drivers, no font tools, no power management.
+
+**Fix:** Added to `install.sh` dnf section:
+- `pipewire pipewire-pulseaudio wireplumber` (audio)
+- `upower power-profiles-daemon` (power management)
+- `fontconfig` (font discovery)
+- `mesa-dri-drivers` (GPU acceleration)
 
 ## Hard Rules — DO NOT VIOLATE
 
@@ -22,11 +115,7 @@ The goal is simple: **zero trust in upstream orgs at runtime**. If any upstream 
 
 7. **The Go module path `github.com/AvengeMedia/DankMaterialShell/core/...` in import statements is the ONLY acceptable reference to `AvengeMedia`.** It is a compile-time identifier, not a runtime URL. Changing it would break the Go module system.
 
-## What This Fork Is NOT
-
-- NOT a feature fork — no features added or removed
-- NOT a code refactor — logic is identical to upstream
-- NOT a permanent divergence — designed to be rebased/merged from upstream periodically
+8. **NEVER install DMS from DNF/package manager.** This repo is deployed via rsync and built locally. The `DankMaterialShell` RPM in Fedora repos is the upstream version — we don't use it.
 
 ## Architecture (Inherited from Upstream)
 
@@ -37,30 +126,15 @@ DankMaterialShell is a monorepo with two components:
 
 The backend provides all system integration (D-Bus, Wayland, hardware) via a Unix socket IPC server. The QML frontend is a thin reactive layer consuming that API.
 
-## What Was Changed (Relative to Upstream)
+## Files Modified in This Fork
 
-### URL String Replacements
-
-All runtime URLs pointing to upstream orgs were replaced with `hamza72x` equivalents. No logic, no control flow, no algorithms were modified.
-
-### Update Mechanism Disabled
-
-- `dms update` — command body replaced with informational message, zero network calls
-- `dms update check` — same, no-op
-- `GetLatestVersion()` — always returns local version, never contacts any remote
-- `git fetch` — never triggered by DMS itself for update purposes
-
-### Package Repo References Removed
-
-All `RepoTypePPA`, `RepoTypeCOPR`, `RepoTypeOBS` mappings for DMS dependencies changed to `RepoTypeManual`. The installer always builds from source using `hamza72x/*` forks. It never adds third-party package repos to your system for DMS packages.
-
-### Files Modified
+### Upstream URL Replacements (supply-chain hardening)
 
 ```
 core/install.sh                                  — installer download URLs
 core/internal/version/version.go                 — version check disabled (returns local only)
 core/internal/distros/base.go                    — binary download URLs
-core/internal/distros/manual_packages.go         — all git clone URLs (8 repos)
+core/internal/distros/manual_packages.go         — all git clone URLs + Hyprland build logic
 core/internal/distros/opensuse.go                — quickshell clone URLs, RepoTypeManual
 core/internal/distros/fedora.go                  — RepoTypeManual (no COPR)
 core/internal/distros/ubuntu.go                  — RepoTypeManual (no PPA)
@@ -82,23 +156,28 @@ quickshell/Modules/Settings/AboutTab.qml         — repo link, tooltip, LICENSE
 quickshell/Modules/Settings/ThemeColorsTab.qml   — theme plugin links
 ```
 
+### Fedora Deployment Fixes (this session)
+
+```
+hamza72x/install.sh                              — added all runtime + Hyprland build deps,
+                                                    pre-deploy symlink step, service enablement
+core/internal/distros/manual_packages.go         — installHyprland() rewritten to use
+                                                    hamza72x/build-hyprland.sh (builds ecosystem
+                                                    libs + Lua 5.5 + packages as RPM)
+```
+
 ### Files Added
 
 ```
-hamza72x/AGENTS.md              — this file (fork rules and context)
+hamza72x/AGENTS.md              — this file (fork rules, deployment, and context)
 hamza72x/README.md              — fork documentation
-hamza72x/install.sh             — fork-specific installer script
+hamza72x/install.sh             — fork-specific installer script (rsync + local build)
 hamza72x/audit-reports/*.html   — HTML security audit reports (10 programs + index)
 ```
 
-### What Was NOT Changed
-
-- **Go module path** (`github.com/AvengeMedia/DankMaterialShell/core/...`) — compile-time module identity, not a runtime URL. Changing it breaks the Go build.
-- **Code comments** referencing upstream — cosmetic, no runtime effect.
-
 ## Forked Dependencies (10 Repos)
 
-Every external repo that is cloned or downloaded during installation or runtime:
+Every external repo that is cloned or downloaded during installation:
 
 | # | Original | Fork | Visibility | Type |
 |---|----------|------|-----------|------|
@@ -113,32 +192,32 @@ Every external repo that is cloned or downloaded during installation or runtime:
 | 9 | ghostty-org/ghostty | hamza72x/ghostty | Public | Terminal emulator (Zig) |
 | 10 | Supreeeme/xwayland-satellite | hamza72x/xwayland-satellite | Public | XWayland bridge (Rust) |
 
-> **Note:** Only the main repo (#1) is private. All dependency forks (#2–#10) are public. The `dankinstall` TUI clones dependencies via HTTPS (no SSH required for those). Only the initial clone of the main repo requires SSH authentication.
+> **Note:** Only the main repo (#1) is private. All dependency forks (#2–#10) are public. The `dankinstall` TUI clones dependencies via HTTPS (no SSH required for those). The main repo is deployed via rsync (never cloned on the target).
 
-## Installation
+## Target Machine State (Fedora 44 @ 192.168.0.185)
 
-This is a **private repo**. The curl one-liner does not work (requires auth). Use SSH clone + local build.
+### Already Present (base system)
+- systemd, dbus-broker, polkit
+- NetworkManager, bluez
+- openssh-server
+- Fedora 44, kernel 7.0.14
 
-### On a barebone Fedora (or any supported distro):
+### Installed by `install.sh` (via dnf)
+- Build tools: git, make, gcc, gcc-c++, golang, cargo, rust, cmake, ninja-build, meson, rpm-build
+- Audio: pipewire, pipewire-pulseaudio, wireplumber
+- Power: upower, power-profiles-daemon
+- Display: mesa-dri-drivers, fontconfig
+- Qt6: qt6-qtbase-devel, qt6-qtdeclarative-devel, qt6-qtshadertools-devel, qt6-qtwayland-devel, qt6-qtmultimedia-devel
+- Hyprland deps: glslang-devel, vulkan-headers, cairo-devel, pango-devel, pixman-devel, 30+ more (see install.sh)
+- Wayland: wayland-devel, wayland-protocols-devel, libdrm-devel, xorg-x11-server-Xwayland
 
-```sh
-# 1. Set up SSH key for GitHub (skip if already done)
-ssh-keygen -t ed25519
-cat ~/.ssh/id_ed25519.pub
-# → Add that key at https://github.com/settings/ssh/new
-
-# 2. Clone and run installer
-git clone git@github.com:hamza72x/DankMaterialShell.git ~/.local/src/DankMaterialShell
-cd ~/.local/src/DankMaterialShell/hamza72x
-bash install.sh
-```
-
-The installer handles everything:
-1. Verifies SSH access to GitHub
-2. Installs build dependencies via system package manager (dnf/pacman/apt)
-3. Builds `dms` CLI and `dankinstall` from source
-4. Runs `dankinstall` TUI (compositor/terminal selection, builds all deps from `hamza72x/*` forks)
-5. Installs the shell system-wide + systemd service
+### Built from Source by `dankinstall`
+- quickshell (from hamza72x/quickshell)
+- Hyprland v0.55 + ecosystem (from hamza72x/Hyprland via build-hyprland.sh)
+- ghostty (from hamza72x/ghostty) — or kitty/alacritty from DNF
+- matugen (from hamza72x/matugen)
+- dgop (from hamza72x/dgop)
+- dms CLI (from this repo's core/)
 
 ## Post-Install: Updates Are Permanently Disabled
 
@@ -153,92 +232,26 @@ After installation, **no automatic or manual updates from any remote will ever o
 | COPR/PPA/OBS repo install | REMOVED | All DMS deps use `RepoTypeManual` (build from source) |
 | Plugin registry update | LOCAL ONLY | Uses `hamza72x/dms-plugin-registry` fork, no auto-sync |
 
-### What IS allowed (not blocked):
-
-- **System package manager** (`dnf update`, `pacman -Syu`, `apt upgrade`) — these update official distro packages and are completely unrelated to DMS. They are trusted.
-- **User-initiated git operations** — if YOU manually run `git pull` in the DMS config dir, that's your choice. The shell itself will never do this.
-- **Plugin installation from registry** — plugins are cloned from repos listed in the `hamza72x/dms-plugin-registry` fork. This is a user-initiated action (Settings > Plugins > Install).
-
-### Why this matters:
-
-If updates were allowed, a compromised upstream could:
-1. Push a malicious release to GitHub → auto-update downloads and runs it
-2. Modify a COPR/PPA package → your next install gets a backdoored binary
-3. Push to the plugin registry → a plugin update injects malicious code
-4. Modify any of the 10 dependency repos → your next build includes their code
-
-By disabling all update paths and building from pinned forks, this fork ensures the code running on your machine is exactly what was audited on the fork date.
-
-## Syncing With Upstream (Manual Process)
-
-This is intentionally manual and requires human review:
-
-```sh
-# 1. Add upstream remote (one-time)
-git remote add upstream https://github.com/AvengeMedia/DankMaterialShell.git
-
-# 2. Fetch (does NOT apply anything)
-git fetch upstream
-
-# 3. Review what changed
-git log --oneline main..upstream/main
-
-# 4. Merge only after auditing
-git merge upstream/main
-
-# 5. Re-apply fork patches
-#    Search for any new upstream URLs that need replacing:
-grep -rn "github.com/AvengeMedia\|quickshell-mirror\|YaLTeR\|hyprwm\|ghostty-org\|Supreeeme\|InioX" \
-  --include="*.go" --include="*.sh" --include="*.qml" \
-  | grep -v "go.mod\|go.sum\|import\|//"
-
-# 6. Rebuild and test
-cd core && make && make test
-
-# 7. Push
-git push origin main
-```
-
-Also sync each forked dependency:
-```sh
-# For each repo (dgop, quickshell, niri, etc.):
-cd ~/forks/dgop
-git remote add upstream https://github.com/AvengeMedia/dgop.git
-git fetch upstream
-git log --oneline main..upstream/main  # Review
-git merge upstream/main                 # Merge after audit
-git push origin main
-```
-
-## Security Audit
-
-All 10 repos were audited on **June 30, 2026**. Reports are at `hamza72x/audit-reports/`.
-
-Verdict: **ALL SAFE**. No telemetry, no data exfiltration, no backdoors, no obfuscated code found in any component.
-
-### Audit Scope Per Repo:
-
-| Repo | Files Inspected | Network Calls | exec.Command | Verdict |
-|------|----------------|---------------|--------------|---------|
-| DankMaterialShell | All Go + QML | Weather API, ip-api.com (local use) | System tools (pacman, systemctl, etc.) | SAFE |
-| dgop | All Go | ZERO outbound | 1 (nvidia-smi, hardcoded) | SAFE |
-| dms-plugin-registry | All JSON + CI | ZERO (data-only repo) | ZERO | SAFE |
-| danksearch | All Go | ZERO outbound | ZERO | SAFE |
-| matugen | All Rust | ZERO (default build) | User-configured hooks only | SAFE |
-| quickshell | All C++/QML | ZERO external | QML process spawning (by design) | SAFE |
-| niri | All Rust + build.rs | ZERO (no networking crates) | systemctl, dbus-update (local) | SAFE |
-| Hyprland | All C++ + CMake | ZERO (no networking libs) | hyprpm uses git (user-initiated) | SAFE |
-| ghostty | All Zig + Swift | ZERO (Sentry is disk-only) | ZERO | SAFE |
-| xwayland-satellite | All Rust | ZERO (no networking crates) | Xwayland spawn only | SAFE |
-
 ## Development Notes
 
 - Build the Go CLI: `cd core && make`
 - Build the installer: `cd core && make dankinstall`
 - Run the shell: `dms run` (requires Quickshell installed)
 - Run tests: `cd core && make test`
+- Deploy to target: rsync + `ssh -t hamza@192.168.0.185 'bash ~/DankMaterialShell/hamza72x/install.sh'`
 
 The Go module path remains `github.com/AvengeMedia/DankMaterialShell/core` in import statements. This is intentional — it's a compilation-time identifier, not a runtime URL. The built binary uses only `hamza72x` URLs at runtime.
+
+## Troubleshooting
+
+### "Username for 'https://github.com'" prompt during dankinstall
+The `installDankMaterialShell()` function is trying to clone the private repo. Fix: ensure `~/.config/quickshell/dms` symlink exists before running dankinstall (Step 6 in install.sh handles this).
+
+### Hyprland build fails with missing `glslang` / `vulkan-headers` / etc.
+The Hyprland build deps weren't installed. Fix: ensure the "Installing Hyprland build dependencies" step in install.sh runs successfully (all packages in the `--skip-unavailable` dnf call).
+
+### `sudo: a terminal is required`
+Use `ssh -t` (not plain `ssh`) when running install.sh remotely.
 
 ## Checklist Before Any Commit
 
@@ -250,3 +263,5 @@ Before pushing any change to this fork, verify:
 - [ ] `core/internal/version/version.go` `GetLatestVersion` never makes network calls
 - [ ] No `RepoTypeCOPR`, `RepoTypePPA`, or `RepoTypeOBS` mappings exist for DMS-related packages
 - [ ] All git clone URLs in `manual_packages.go` point to `hamza72x/*`
+- [ ] `hamza72x/install.sh` pre-deploys the QML symlink before running dankinstall
+- [ ] Hyprland builds via `build-hyprland.sh` (not bare `make all`)
