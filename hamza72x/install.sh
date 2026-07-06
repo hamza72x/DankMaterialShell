@@ -189,6 +189,10 @@ dnf)
     sudo systemctl disable sddm 2>/dev/null || true
     sudo systemctl enable greetd
 
+    # Remove uwsm-managed session file — uwsm is not installed in this setup.
+    # Leaving it causes a login loop when the greeter selects it as the session.
+    sudo rm -f /usr/share/wayland-sessions/hyprland-uwsm.desktop
+
     info "Setting default target to graphical (minimal installs default to multi-user)..."
     sudo systemctl set-default graphical.target
     ;;
