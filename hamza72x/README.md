@@ -13,6 +13,17 @@ This fork mitigates that risk by:
 3. Auditing the source of each dependency before forking
 4. Making **zero code logic changes** — only URL replacements
 
+## Deploy (rsync)
+
+```sh
+# Sync repo to target (run from dev machine)
+rsync -avz --delete --exclude='.git' --exclude='core/bin' --exclude='core/vendor' \
+  /home/hamza/personal/DankMaterialShell/ hamza@192.168.0.107:~/DankMaterialShell/
+
+# Run installer on target
+ssh -t hamza@192.168.0.107 'bash ~/DankMaterialShell/hamza72x/install.sh'
+```
+
 ## Installation
 
 This is a **private repo**. Install via SSH clone + local build on a barebone Fedora (or Arch/Debian):

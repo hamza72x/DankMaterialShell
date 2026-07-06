@@ -84,7 +84,7 @@ func NewModel(version string, logFilePath string) Model {
 		},
 		showDebugLogs:    false,
 		selectedWM:       0,
-		selectedTerminal: 0, // Default to Ghostty
+		selectedTerminal: 0, // Default to Alacritty
 		selectedDep:      0,
 		selectedConfig:   0,
 		reinstallItems:   make(map[string]bool),

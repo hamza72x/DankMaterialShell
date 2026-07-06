@@ -184,6 +184,10 @@ dnf)
     info "Enabling runtime services..."
     sudo systemctl enable upower power-profiles-daemon
 
+    info "Installing and enabling greetd (display manager for DMS greeter)..."
+    sudo dnf install -y greetd
+    sudo systemctl enable greetd
+
     info "Setting default target to graphical (minimal installs default to multi-user)..."
     sudo systemctl set-default graphical.target
     ;;

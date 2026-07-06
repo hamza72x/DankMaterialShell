@@ -13,10 +13,11 @@ import (
 // windowManagerOptions returns the WM enums in selection-list order (debian omits
 // Hyprland). selectedWM indexes into this, so all index->WM conversions use it.
 func (m Model) windowManagerOptions() []deps.WindowManager {
-	opts := []deps.WindowManager{deps.WindowManagerNiri}
+	var opts []deps.WindowManager
 	if m.osInfo == nil || m.osInfo.Distribution.ID != "debian" {
 		opts = append(opts, deps.WindowManagerHyprland)
 	}
+	opts = append(opts, deps.WindowManagerNiri)
 	opts = append(opts, deps.WindowManagerMango)
 	return opts
 }
@@ -27,7 +28,7 @@ func (m Model) selectedWindowManager() deps.WindowManager {
 	if m.selectedWM >= 0 && m.selectedWM < len(opts) {
 		return opts[m.selectedWM]
 	}
-	return deps.WindowManagerNiri
+	return deps.WindowManagerHyprland
 }
 
 func (m Model) viewSelectWindowManager() string {
@@ -43,9 +44,7 @@ func (m Model) viewSelectWindowManager() string {
 	options := []struct {
 		name        string
 		description string
-	}{
-		{"niri", "Scrollable-tiling Wayland compositor."},
-	}
+	}{}
 
 	if m.osInfo == nil || m.osInfo.Distribution.ID != "debian" {
 		options = append(options, struct {
@@ -53,6 +52,11 @@ func (m Model) viewSelectWindowManager() string {
 			description string
 		}{"Hyprland", "Dynamic tiling Wayland compositor."})
 	}
+
+	options = append(options, struct {
+		name        string
+		description string
+	}{"niri", "Scrollable-tiling Wayland compositor."})
 
 	options = append(options, struct {
 		name        string
@@ -106,17 +110,17 @@ func (m Model) viewSelectTerminal() string {
 			name        string
 			description string
 		}{
-			{"kitty", "A feature-rich, customizable terminal emulator."},
 			{"alacritty", "A simple terminal emulator."},
+			{"kitty", "A feature-rich, customizable terminal emulator."},
 		}
 	} else {
 		options = []struct {
 			name        string
 			description string
 		}{
-			{"ghostty", "A fast, native terminal emulator built in Zig."},
-			{"kitty", "A feature-rich, customizable terminal emulator."},
 			{"alacritty", "A simple terminal emulator."},
+			{"kitty", "A feature-rich, customizable terminal emulator."},
+			{"ghostty", "A fast, native terminal emulator built in Zig."},
 		}
 	}
 
@@ -218,20 +222,20 @@ func (m Model) detectDependencies() tea.Cmd {
 		if m.osInfo != nil && m.osInfo.Distribution.ID == "gentoo" {
 			switch m.selectedTerminal {
 			case 0:
-				terminal = deps.TerminalKitty
-			case 1:
 				terminal = deps.TerminalAlacritty
-			default:
+			case 1:
 				terminal = deps.TerminalKitty
+			default:
+				terminal = deps.TerminalAlacritty
 			}
 		} else {
 			switch m.selectedTerminal {
 			case 0:
-				terminal = deps.TerminalGhostty
+				terminal = deps.TerminalAlacritty
 			case 1:
 				terminal = deps.TerminalKitty
 			default:
-				terminal = deps.TerminalAlacritty
+				terminal = deps.TerminalGhostty
 			}
 		}
 
