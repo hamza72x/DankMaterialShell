@@ -16,12 +16,14 @@ This fork mitigates that risk by:
 ## Deploy (rsync)
 
 ```sh
+TARGET_NODE=hamza@192.168.0.107
+
 # Sync repo to target (run from dev machine)
 rsync -avz --delete --exclude='.git' --exclude='core/bin' --exclude='core/vendor' \
-  /home/hamza/personal/DankMaterialShell/ hamza@192.168.0.107:~/DankMaterialShell/
+  /home/hamza/personal/DankMaterialShell/ $TARGET_NODE:~/DankMaterialShell/
 
 # Run installer on target
-ssh -t hamza@192.168.0.107 'bash ~/DankMaterialShell/hamza72x/install.sh'
+ssh -t $TARGET_NODE 'bash ~/DankMaterialShell/hamza72x/install.sh'
 ```
 
 ## Installation
