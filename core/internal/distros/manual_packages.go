@@ -493,14 +493,39 @@ func (m *ManualPackageInstaller) installMatugen(ctx context.Context, sudoPasswor
 	progressChan <- InstallProgressMsg{
 		Phase:       PhaseSystemPackages,
 		Progress:    0.1,
-		Step:        "Installing matugen via cargo...",
+		Step:        "Cloning matugen repo...",
 		IsComplete:  false,
-		CommandInfo: "cargo install --git https://github.com/hamza72x/matugen",
+		CommandInfo: "git clone https://github.com/hamza72x/matugen (no submodules)",
 	}
 
-	installCmd := exec.CommandContext(ctx, "cargo", "install", "--git", "https://github.com/hamza72x/matugen")
-	if err := m.runWithProgressStep(installCmd, progressChan, PhaseSystemPackages, 0.1, 0.7, "Building matugen..."); err != nil {
-		return fmt.Errorf("failed to install matugen: %w", err)
+	// Clone without --recurse-submodules to avoid broken gitlink with no URL
+	tmpDir, err := os.MkdirTemp("", "matugen-build-*")
+	if err != nil {
+		return fmt.Errorf("failed to create temp dir: %w", err)
+	}
+	defer os.RemoveAll(tmpDir)
+
+	cloneCmd := exec.CommandContext(ctx, "git", "clone", "--depth=1",
+		"https://github.com/hamza72x/matugen.git", tmpDir)
+	if err := cloneCmd.Run(); err != nil {
+		return fmt.Errorf("failed to clone matugen: %w", err)
+	}
+
+	// Remove stale submodule gitlink entry (material-colors is a crates.io dep, not a path dep)
+	rmSubmoduleCmd := exec.CommandContext(ctx, "git", "-C", tmpDir, "rm", "--cached", "-f", "material-colors")
+	_ = rmSubmoduleCmd.Run() // ignore error if entry doesn't exist
+
+	progressChan <- InstallProgressMsg{
+		Phase:       PhaseSystemPackages,
+		Progress:    0.2,
+		Step:        "Building matugen with cargo...",
+		IsComplete:  false,
+		CommandInfo: "cargo install --path .",
+	}
+
+	buildCmd := exec.CommandContext(ctx, "cargo", "install", "--path", tmpDir)
+	if err := m.runWithProgressStep(buildCmd, progressChan, PhaseSystemPackages, 0.2, 0.7, "Building matugen..."); err != nil {
+		return fmt.Errorf("failed to build matugen: %w", err)
 	}
 
 	homeDir := os.Getenv("HOME")

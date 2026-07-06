@@ -183,6 +183,9 @@ dnf)
 
     info "Enabling runtime services..."
     sudo systemctl enable upower power-profiles-daemon
+
+    info "Setting default target to graphical (minimal installs default to multi-user)..."
+    sudo systemctl set-default graphical.target
     ;;
 pacman)
     BUILD_PKGS=(
