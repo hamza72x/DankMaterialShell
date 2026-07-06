@@ -288,7 +288,9 @@ func (m *ManualPackageInstaller) installQuickshell(ctx context.Context, variant 
 
 	configureCmd := exec.CommandContext(ctx, "cmake", "-GNinja", "-B", "build",
 		"-DCMAKE_BUILD_TYPE=RelWithDebInfo",
-		"-DCRASH_REPORTER=off",
+		"-DCMAKE_INSTALL_PREFIX=/usr",
+		"-DINSTALL_QML_PREFIX=/usr/lib64/qt6/qml",
+		"-DCRASH_HANDLER=OFF",
 		"-DCMAKE_CXX_STANDARD=20")
 	configureCmd.Dir = tmpDir
 	configureCmd.Env = append(os.Environ(), "TMPDIR="+cacheDir)

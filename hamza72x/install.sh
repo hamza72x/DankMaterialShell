@@ -136,8 +136,8 @@ dnf)
     info "Installing Rust/Cargo..."
     sudo dnf install -y cargo rust
 
-    info "Installing CMake/Ninja..."
-    sudo dnf install -y cmake ninja-build pkg-config
+    info "Installing CMake/Ninja/Zig..."
+    sudo dnf install -y cmake ninja-build pkg-config zig
 
     info "Installing runtime services and drivers..."
     sudo dnf install -y \
