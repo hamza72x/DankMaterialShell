@@ -268,6 +268,22 @@ ln -sfn "$CLONE_DIR/quickshell" "$DMS_QML_DIR"
 info "Symlinked $DMS_QML_DIR → $CLONE_DIR/quickshell"
 
 # -----------------------------------------------------------
+# Step 5b: Pre-extract Lua 5.5 source (www.lua.org unreachable)
+# -----------------------------------------------------------
+
+# build-hyprland.sh downloads Lua from www.lua.org which may be unreachable.
+# We bundle the source tarball and pre-extract it to skip the download.
+LUA_BUILD_DIR="$HOME/hypr-deps"
+if [ ! -d "$LUA_BUILD_DIR/lua-5.5.0" ]; then
+    info "Pre-extracting bundled Lua 5.5.0 source..."
+    mkdir -p "$LUA_BUILD_DIR"
+    tar xzf "$CLONE_DIR/hamza72x/vendor/lua-5.5.0.tar.gz" -C "$LUA_BUILD_DIR"
+    info "Lua 5.5.0 source ready at $LUA_BUILD_DIR/lua-5.5.0"
+else
+    info "Lua 5.5.0 source already present at $LUA_BUILD_DIR/lua-5.5.0"
+fi
+
+# -----------------------------------------------------------
 # Step 6: Run dankinstall
 # -----------------------------------------------------------
 
