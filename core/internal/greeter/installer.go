@@ -799,113 +799,11 @@ func HasLegacyLocalGreeterWrapper() bool {
 	return err == nil && !info.IsDir()
 }
 
-// TryInstallGreeterPackage attempts to install dms-greeter from the distro's official repo.
+// TryInstallGreeterPackage is disabled in this fork — no third-party repos allowed.
+// The greeter wrapper is copied from the local DMS installation by CopyGreeterFiles.
 func TryInstallGreeterPackage(logFunc func(string), sudoPassword string) bool {
-	osInfo, err := distros.GetOSInfo()
-	if err != nil {
-		return false
-	}
-	config, exists := distros.Registry[osInfo.Distribution.ID]
-	if !exists {
-		return false
-	}
-
-	if IsGreeterPackaged() {
-		logFunc("✓ dms-greeter package already installed")
-		return true
-	}
-
-	ctx := context.Background()
-	var installCmd *exec.Cmd
-	var failHint string
-
-	switch config.Family {
-	case distros.FamilyDebian:
-		obsSlug := getDebianOBSSlug(osInfo)
-		keyURL := fmt.Sprintf("https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/%s/Release.key", obsSlug)
-		repoLine := fmt.Sprintf("deb [signed-by=/etc/apt/keyrings/danklinux.gpg] https://download.opensuse.org/repositories/home:/AvengeMedia:/danklinux/%s/ /", obsSlug)
-		failHint = fmt.Sprintf("⚠ dms-greeter install failed. Add OBS repo manually:\nsudo apt-get install -y gnupg\nsudo mkdir -p /etc/apt/keyrings\ncurl -fsSL %s | sudo gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg\necho '%s' | sudo tee /etc/apt/sources.list.d/danklinux.list\nsudo apt update && sudo apt-get install -y dms-greeter", keyURL, repoLine)
-		logFunc(fmt.Sprintf("Adding DankLinux OBS repository (%s)...", obsSlug))
-		if _, err := exec.LookPath("gpg"); err != nil {
-			logFunc("Installing gnupg for OBS repository key import...")
-			installGPGCmd := privesc.ExecCommand(ctx, sudoPassword, "apt-get install -y gnupg")
-			installGPGCmd.Stdout = os.Stdout
-			installGPGCmd.Stderr = os.Stderr
-			if err := installGPGCmd.Run(); err != nil {
-				logFunc(fmt.Sprintf("⚠ Failed to install gnupg: %v", err))
-			}
-		}
-		mkdirCmd := privesc.ExecCommand(ctx, sudoPassword, "mkdir -p /etc/apt/keyrings")
-		mkdirCmd.Stdout = os.Stdout
-		mkdirCmd.Stderr = os.Stderr
-		mkdirCmd.Run()
-		addKeyCmd := privesc.ExecCommand(ctx, sudoPassword,
-			fmt.Sprintf(`bash -c "curl -fsSL %s | gpg --dearmor -o /etc/apt/keyrings/danklinux.gpg"`, keyURL))
-		addKeyCmd.Stdout = os.Stdout
-		addKeyCmd.Stderr = os.Stderr
-		addKeyCmd.Run()
-		addRepoCmd := privesc.ExecCommand(ctx, sudoPassword,
-			fmt.Sprintf(`bash -c "echo '%s' > /etc/apt/sources.list.d/danklinux.list"`, repoLine))
-		addRepoCmd.Stdout = os.Stdout
-		addRepoCmd.Stderr = os.Stderr
-		addRepoCmd.Run()
-		privesc.ExecCommand(ctx, sudoPassword, "apt-get update").Run()
-		installCmd = privesc.ExecCommand(ctx, sudoPassword, "apt-get install -y dms-greeter")
-	case distros.FamilySUSE:
-		repoURL := getOpenSUSEOBSRepoURL(osInfo)
-		failHint = fmt.Sprintf("⚠ dms-greeter install failed. Add OBS repo manually:\nsudo zypper addrepo %s\nsudo zypper refresh && sudo zypper install dms-greeter", repoURL)
-		logFunc("Adding DankLinux OBS repository...")
-		addRepoCmd := privesc.ExecCommand(ctx, sudoPassword, fmt.Sprintf("zypper addrepo %s", repoURL))
-		addRepoCmd.Stdout = os.Stdout
-		addRepoCmd.Stderr = os.Stderr
-		addRepoCmd.Run()
-		privesc.ExecCommand(ctx, sudoPassword, "zypper refresh").Run()
-		installCmd = privesc.ExecCommand(ctx, sudoPassword, "zypper install -y dms-greeter")
-	case distros.FamilyUbuntu:
-		failHint = "⚠ dms-greeter install failed. Add PPA manually: sudo add-apt-repository ppa:avengemedia/danklinux && sudo apt-get update && sudo apt-get install -y dms-greeter"
-		logFunc("Enabling PPA ppa:avengemedia/danklinux...")
-		ppacmd := privesc.ExecCommand(ctx, sudoPassword, "add-apt-repository -y ppa:avengemedia/danklinux")
-		ppacmd.Stdout = os.Stdout
-		ppacmd.Stderr = os.Stderr
-		ppacmd.Run()
-		privesc.ExecCommand(ctx, sudoPassword, "apt-get update").Run()
-		installCmd = privesc.ExecCommand(ctx, sudoPassword, "apt-get install -y dms-greeter")
-	case distros.FamilyFedora:
-		failHint = "⚠ dms-greeter install failed. Enable COPR manually: sudo dnf copr enable avengemedia/danklinux && sudo dnf install dms-greeter"
-		logFunc("Enabling COPR avengemedia/danklinux...")
-		coprcmd := privesc.ExecCommand(ctx, sudoPassword, "dnf copr enable -y avengemedia/danklinux")
-		coprcmd.Stdout = os.Stdout
-		coprcmd.Stderr = os.Stderr
-		coprcmd.Run()
-		installCmd = privesc.ExecCommand(ctx, sudoPassword, "dnf install -y dms-greeter")
-	case distros.FamilyArch:
-		aurHelper := ""
-		for _, helper := range []string{"paru", "yay"} {
-			if _, err := exec.LookPath(helper); err == nil {
-				aurHelper = helper
-				break
-			}
-		}
-		if aurHelper == "" {
-			logFunc("⚠ No AUR helper found (paru/yay). Install greetd-dms-greeter-git from AUR: https://aur.archlinux.org/packages/greetd-dms-greeter-git")
-			return false
-		}
-		failHint = fmt.Sprintf("⚠ dms-greeter install failed. Install from AUR: %s -S greetd-dms-greeter-git", aurHelper)
-		installCmd = exec.CommandContext(ctx, aurHelper, "-S", "--noconfirm", "greetd-dms-greeter-git")
-	default:
-		return false
-	}
-
-	logFunc("Installing dms-greeter from official repository...")
-	installCmd.Stdout = os.Stdout
-	installCmd.Stderr = os.Stderr
-
-	if err := installCmd.Run(); err != nil {
-		logFunc(failHint)
-		return false
-	}
-
-	logFunc("✓ dms-greeter package installed")
+	logFunc("Skipping dms-greeter package install (third-party repos disabled in this fork)")
+	logFunc("Greeter will be installed from local DMS files")
 	return true
 }
 
@@ -2223,47 +2121,6 @@ func stripCacheDirFlag(command string) string {
 	}
 
 	return strings.Join(filtered, " ")
-}
-
-// getDebianOBSSlug returns the OBS repository slug for the running Debian version.
-func getDebianOBSSlug(osInfo *distros.OSInfo) string {
-	versionID := strings.ToLower(osInfo.VersionID)
-	codename := strings.ToLower(osInfo.VersionCodename)
-	prettyName := strings.ToLower(osInfo.PrettyName)
-
-	if strings.Contains(prettyName, "sid") || strings.Contains(prettyName, "unstable") ||
-		codename == "sid" || versionID == "sid" {
-		return "Debian_Unstable"
-	}
-	if versionID == "testing" || codename == "testing" {
-		return "Debian_Testing"
-	}
-	if versionID != "" {
-		return "Debian_" + versionID // "Debian_13"
-	}
-	return "Debian_Unstable"
-}
-
-// getOpenSUSEOBSRepoURL returns the OBS .repo file URL for the running openSUSE variant.
-func getOpenSUSEOBSRepoURL(osInfo *distros.OSInfo) string {
-	const base = "https://download.opensuse.org/repositories/home:AvengeMedia:danklinux"
-	var slug string
-	switch osInfo.Distribution.ID {
-	case "opensuse-leap":
-		v := osInfo.VersionID
-		if v != "" && !strings.Contains(v, ".") {
-			v += ".0" // "16" → "16.0"
-		}
-		if v == "" {
-			v = "16.0"
-		}
-		slug = v
-	case "opensuse-slowroll":
-		slug = "openSUSE_Slowroll"
-	default: // opensuse-tumbleweed || unknown version
-		slug = "openSUSE_Tumbleweed"
-	}
-	return fmt.Sprintf("%s/%s/home:AvengeMedia:danklinux.repo", base, slug)
 }
 
 func checkSystemdEnabled(service string) (string, error) {

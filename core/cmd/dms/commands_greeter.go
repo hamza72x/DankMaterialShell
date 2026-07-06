@@ -1528,20 +1528,10 @@ func systemPamManagerRemediationHint() string {
 	}
 }
 
+// isPackageOnlyGreeterDistro is disabled in this fork — greeter is always
+// installed from local DMS files, never from distro packages.
 func isPackageOnlyGreeterDistro() bool {
-	osInfo, err := distros.GetOSInfo()
-	if err != nil {
-		return false
-	}
-	config, exists := distros.Registry[osInfo.Distribution.ID]
-	if !exists {
-		return false
-	}
-	return config.Family == distros.FamilyDebian ||
-		config.Family == distros.FamilySUSE ||
-		config.Family == distros.FamilyUbuntu ||
-		config.Family == distros.FamilyFedora ||
-		config.Family == distros.FamilyArch
+	return false
 }
 
 func promptCompositorChoice(compositors []string) (string, error) {
