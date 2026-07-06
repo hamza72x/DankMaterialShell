@@ -587,15 +587,9 @@ TERMINAL=%s
 }
 
 func (b *BaseDistribution) EnableDMSService(ctx context.Context, wm deps.WindowManager) error {
-	switch wm {
-	case deps.WindowManagerNiri:
-		if err := exec.CommandContext(ctx, "systemctl", "--user", "add-wants", "niri.service", "dms").Run(); err != nil {
-			b.log("Warning: failed to add dms as a want for niri.service")
-		}
-	case deps.WindowManagerHyprland:
-		if err := exec.CommandContext(ctx, "systemctl", "--user", "add-wants", "hyprland-session.target", "dms").Run(); err != nil {
-			b.log("Warning: failed to add dms as a want for hyprland-session.target")
-		}
+	// Enable the DMS service — its [Install] WantedBy handles the correct target
+	if err := exec.CommandContext(ctx, "systemctl", "--user", "enable", "dms.service").Run(); err != nil {
+		b.log(fmt.Sprintf("Warning: failed to enable dms.service: %v", err))
 	}
 
 	return nil

@@ -326,6 +326,15 @@ cd "$CLONE_DIR"
 sudo make install
 
 # -----------------------------------------------------------
+# Step 9: Enable DMS service for user session
+# -----------------------------------------------------------
+
+step "Enabling DMS service"
+
+systemctl --user enable dms.service
+info "DMS will start automatically on next graphical login"
+
+# -----------------------------------------------------------
 # Done
 # -----------------------------------------------------------
 
@@ -333,7 +342,7 @@ printf "\n"
 printf "%b╔══════════════════════════════════════════════════════════╗%b\n" "$GREEN" "$NC"
 printf "%b║  Installation complete!                                  ║%b\n" "$GREEN" "$NC"
 printf "%b║                                                          ║%b\n" "$GREEN" "$NC"
-printf "%b║  Start DMS:   systemctl --user enable --now dms          ║%b\n" "$GREEN" "$NC"
+printf "%b║  Reboot to start DMS (auto-enabled via systemd)          ║%b\n" "$GREEN" "$NC"
 printf "%b║  Or manually:  dms run                                   ║%b\n" "$GREEN" "$NC"
 printf "%b║                                                          ║%b\n" "$GREEN" "$NC"
 printf "%b║  Source:  %s%b\n" "$GREEN" "$CLONE_DIR" "$NC"
