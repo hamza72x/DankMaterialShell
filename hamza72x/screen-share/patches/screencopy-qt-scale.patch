@@ -1,0 +1,15 @@
+diff --git a/src/shared/ScreencopyShared.cpp b/src/shared/ScreencopyShared.cpp
+index c5db2bc..351b3f3 100644
+--- a/src/shared/ScreencopyShared.cpp
++++ b/src/shared/ScreencopyShared.cpp
+@@ -59,6 +59,10 @@ SSelectionData promptForScreencopySelection() {
+     proc.addEnv("QT_QPA_PLATFORM", "wayland");
+     proc.addEnv("XCURSOR_SIZE", XCURSOR_SIZE ? XCURSOR_SIZE : "24");
+     proc.addEnv("HYPRLAND_INSTANCE_SIGNATURE", HYPRLAND_INSTANCE_SIGNATURE ? HYPRLAND_INSTANCE_SIGNATURE : "0");
++    // Keep the picker at its designed pixel size regardless of session QT scaling.
++    proc.addEnv("QT_SCALE_FACTOR", "1");
++    proc.addEnv("QT_AUTO_SCREEN_SCALE_FACTOR", "0");
++    proc.addEnv("QT_ENABLE_HIGHDPI_SCALING", "0");
+     proc.addEnv("XDPH_WINDOW_SHARING_LIST", buildWindowList()); // buildWindowList will sanitize any shell stuff in case the picker (qt) does something funky? It shouldn't.
+ 
+     if (!proc.runSync())

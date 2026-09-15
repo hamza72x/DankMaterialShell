@@ -29,10 +29,13 @@ CLONE_DIR="$HOME/.local/src/DankMaterialShell"
 # Helpers
 # -----------------------------------------------------------
 
-info()  { printf "%b[*]%b %s\n" "$GREEN" "$NC" "$1"; }
-warn()  { printf "%b[!]%b %s\n" "$YELLOW" "$NC" "$1"; }
-fail()  { printf "%b[x]%b %s\n" "$RED" "$NC" "$1"; exit 1; }
-step()  { printf "\n%b=== %s ===%b\n\n" "$CYAN" "$1" "$NC"; }
+info() { printf "%b[*]%b %s\n" "$GREEN" "$NC" "$1"; }
+warn() { printf "%b[!]%b %s\n" "$YELLOW" "$NC" "$1"; }
+fail() {
+    printf "%b[x]%b %s\n" "$RED" "$NC" "$1"
+    exit 1
+}
+step() { printf "\n%b=== %s ===%b\n\n" "$CYAN" "$1" "$NC"; }
 
 # -----------------------------------------------------------
 # Preflight checks
@@ -344,7 +347,6 @@ info "DMS will start automatically on next graphical login"
 # -----------------------------------------------------------
 
 # step "Installing DMS greeter"
-
 # info "Configuring greetd to use DMS greeter (from local source files)"
 # dms greeter install
 # info "DMS greeter installed and greetd configured"
