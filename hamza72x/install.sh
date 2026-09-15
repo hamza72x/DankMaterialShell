@@ -142,7 +142,7 @@ dnf)
     info "Installing runtime services and drivers..."
     sudo dnf install -y \
         pipewire pipewire-pulseaudio wireplumber \
-        upower power-profiles-daemon \
+        upower \
         fontconfig mesa-dri-drivers
 
     info "Installing Hyprland build dependencies..."
@@ -182,12 +182,12 @@ dnf)
         jemalloc-devel cli11-devel
 
     info "Enabling runtime services..."
-    sudo systemctl enable upower power-profiles-daemon
+    sudo systemctl enable upower
 
     info "Installing and enabling greetd (login manager)..."
-    sudo dnf install -y greetd
-    sudo systemctl disable sddm 2>/dev/null || true
-    sudo systemctl enable greetd
+    # sudo dnf install -y greetd
+    # sudo systemctl disable sddm 2>/dev/null || true
+    # sudo systemctl disable greetd 2>/dev/null || true
 
     # Remove uwsm-managed session file — uwsm is not installed in this setup.
     # Leaving it causes a login loop when the greeter selects it as the session.
@@ -343,11 +343,11 @@ info "DMS will start automatically on next graphical login"
 # Step 10: Install DMS greeter (from local source files)
 # -----------------------------------------------------------
 
-step "Installing DMS greeter"
+# step "Installing DMS greeter"
 
-info "Configuring greetd to use DMS greeter (from local source files)"
-dms greeter install
-info "DMS greeter installed and greetd configured"
+# info "Configuring greetd to use DMS greeter (from local source files)"
+# dms greeter install
+# info "DMS greeter installed and greetd configured"
 
 # -----------------------------------------------------------
 # Done
