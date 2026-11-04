@@ -15,6 +15,7 @@ Scope {
 
     onShouldLockChanged: {
         IdleService.isShellLocked = shouldLock;
+        setLockedHint(shouldLock);
         if (shouldLock && lockPowerOffArmed) {
             lockStateCheck.restart();
         }
@@ -55,6 +56,17 @@ Scope {
             DMSService.lockSession(() => {});
         else
             DMSService.unlockSession(() => {});
+    }
+
+    // Mirror the lock into logind's LockedHint. Nothing else sets it, and it
+    // is what a restarted shell reads to decide whether to re-lock: without
+    // it, Quickshell dying while locked leaves Hyprland on its "lockscreen app
+    // died" screen with nobody to bring the lock back. Driven by shouldLock,
+    // which every lock and unlock path goes through (sessionLock's
+    // lockedChanged only fires on lock).
+    function setLockedHint(locked: bool) {
+        const path = SessionService.sessionPath || "/org/freedesktop/login1/session/auto";
+        Quickshell.execDetached(["busctl", "call", "org.freedesktop.login1", path, "org.freedesktop.login1.Session", "SetLockedHint", "b", locked ? "true" : "false"]);
     }
 
     function lock() {
@@ -249,6 +261,7 @@ Scope {
             return JSON.stringify({
                 shouldLock: root.shouldLock,
                 sessionLockLocked: sessionLock.locked,
+                sessionLockSecure: sessionLock.secure,
                 lockInitiatedLocally: root.lockInitiatedLocally,
                 pendingLock: root.pendingLock,
                 loginctlLocked: SessionService.locked,

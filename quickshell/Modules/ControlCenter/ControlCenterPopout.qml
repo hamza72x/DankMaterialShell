@@ -128,7 +128,7 @@ DankPopout {
                     NetworkService.activeService.autoRefreshEnabled = false;
                 }
                 if (BluetoothService.adapter && BluetoothService.adapter.discovering)
-                    BluetoothService.adapter.discovering = false;
+                    BluetoothService.requestStopDiscovery();
                 editMode = false;
             });
         }

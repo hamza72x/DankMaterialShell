@@ -14,6 +14,8 @@ Singleton {
     readonly property bool available: adapter !== null
     readonly property bool enabled: (adapter && adapter.enabled) ?? false
     readonly property bool discovering: (adapter && adapter.discovering) ?? false
+    property var pendingConnectDevice: null
+    property bool discoveryBounceRunning: false
     readonly property var devices: adapter ? adapter.devices : null
     readonly property bool enhancedPairingAvailable: DMSService.dmsAvailable && DMSService.apiVersion >= 9 && DMSService.capabilities.includes("bluetooth")
     readonly property bool connected: {
@@ -184,13 +186,27 @@ Singleton {
         return device.pairing || device.state === BluetoothDeviceState.Disconnecting || device.state === BluetoothDeviceState.Connecting;
     }
 
+    // MediaTek controllers often come up with Connectable=false. BlueZ then
+    // fails Connect() with br-connection-refused and never creates an audio card.
     function connectDeviceWithTrust(device) {
         if (!device) {
             return;
         }
 
         device.trusted = true;
-        device.connect();
+        pendingConnectDevice = device;
+        if (!ensureConnectableProcess.running)
+            ensureConnectableProcess.running = true;
+    }
+
+    // StopDiscovery only works for the D-Bus client that called StartDiscovery.
+    // When another program holds the session, Discovering stays true and the
+    // Scan control cannot clear it. Bouncing adapter power drops that session.
+    function requestStopDiscovery() {
+        if (!adapter || discoveryBounceRunning)
+            return;
+        adapter.discovering = false;
+        foreignDiscoveryTimer.restart();
     }
 
     function pairDevice(device, callback) {
@@ -210,8 +226,7 @@ Singleton {
         }
 
         // Quickshell does not implement a bluez agent, so we can try to pair but only with devices that don't require a passcode
-        device.trusted = true;
-        device.connect();
+        root.connectDeviceWithTrust(device);
         if (callback)
             callback({
                 success: true
@@ -542,6 +557,37 @@ Singleton {
             }
 
             callback = null;
+        }
+    }
+
+    Timer {
+        id: foreignDiscoveryTimer
+        interval: 1000
+        repeat: false
+        onTriggered: {
+            if (!root.adapter || !root.adapter.discovering || root.discoveryBounceRunning)
+                return;
+            root.discoveryBounceRunning = true;
+            discoveryBounceProcess.running = true;
+        }
+    }
+
+    Process {
+        id: ensureConnectableProcess
+        command: ["bash", "-c", "a=$(busctl tree org.bluez --list | awk '/hci[0-9]+$/ {print; exit}'); [ -n \"$a\" ] && busctl set-property org.bluez \"$a\" org.bluez.Adapter1 Connectable b true && busctl set-property org.bluez \"$a\" org.bluez.Adapter1 Pairable b true"]
+        onExited: {
+            const dev = root.pendingConnectDevice;
+            root.pendingConnectDevice = null;
+            if (dev)
+                dev.connect();
+        }
+    }
+
+    Process {
+        id: discoveryBounceProcess
+        command: ["bash", "-c", "bluetoothctl --timeout 15 power off >/dev/null 2>&1 || true; sleep 0.8; bluetoothctl --timeout 15 power on >/dev/null 2>&1 || bluetoothctl --timeout 15 power on >/dev/null 2>&1"]
+        onExited: {
+            root.discoveryBounceRunning = false;
         }
     }
 }

@@ -154,7 +154,10 @@ Rectangle {
                 onClicked: {
                     if (!BluetoothService.adapter)
                         return;
-                    BluetoothService.adapter.discovering = !BluetoothService.adapter.discovering;
+                    if (BluetoothService.adapter.discovering)
+                        BluetoothService.requestStopDiscovery();
+                    else
+                        BluetoothService.adapter.discovering = true;
                 }
             }
         }
